@@ -1,3 +1,6 @@
+# Xcode DerivedData directory
+/DerivedData
+
 # Compiled Object files
 *.slo
 *.lo
