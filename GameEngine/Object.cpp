@@ -11,13 +11,31 @@
 
 Object::Object()
 {
-	this->objectSurface = NULL;
+	this->surface           = NULL;
+	this->X                 = 0;
+	this->Y                 = 0;
+	this->isSprite			= false;
+	this->animated          = false;
+	this->verticalAnimation = true;
 }
 
 Object::Object(SDL_Surface *surface)
 {
-	this->objectSurface = surface;
-	this->animated      = false;
+	this->surface = surface;
+	if (this->surface != NULL)
+	{
+		this->X					= 0;
+		this->Y					= 0;
+		this->width				= this->surface->w;
+		this->height			= this->surface->h;
+		this->isSprite			= false;
+		this->animated			= false;
+		this->verticalAnimation = true;
+	}
+	else
+	{
+		fprintf(stderr, "Object::Object(SDL_Surface *): Surface assigned is NULL pointer\n");
+	}
 
 }
 
@@ -28,14 +46,15 @@ Object::Object(SDL_Surface *surface,
 			           int  height
 			   )
 {
-	this->objectSurface = surface;
-	this->columns       = columns;
-	this->rows          = rows;
-	this->width         = width;
-	this->height        = height;
-	this->animated      = true;
-	this->currentFrameX = 0;
-	this->currentFrameY = 0;
+	this->surface			= surface;
+	this->columns			= columns;
+	this->rows				= rows;
+	this->width				= width;
+	this->height			= height;
+	this->animated			= true;
+	this->currentFrameX		= 0;
+	this->currentFrameY		= 0;
+	this->verticalAnimation = true;
 }
 
 bool Object::setCurrentFrame(int positionX, int positionY)
@@ -58,6 +77,21 @@ void Object::setAnimated(bool value)
 	this->animated = value;
 }
 
+void Object::setAnimate(int columns, int rows)
+{
+	if (this->surface != NULL)
+	{
+		this->columns		= columns;
+		this->rows			= rows;
+		this->width			= this->surface->w/columns;
+		this->height		= this->surface->h/rows;
+		this->currentFrameX = 0;
+		this->currentFrameY = 0;
+		this->isSprite		= true;
+
+	}
+}
+
 
 int Object::getCurrentFrameX()
 {
@@ -75,29 +109,27 @@ void Object::addAction(ObjectAction *action)
 }
 
 
-/*
+/**
  * Load an image to the SDL surface of the object
  */
 bool Object::loadImage(char* file)
 {
-	SDL_Surface *Surf,*Surf_Return;
-	
-	if ((Surf = IMG_Load(file))==NULL){
-		return NULL;
-		
+	if ((this->surface = IMG_Load(file))==NULL)
+	{
+		fprintf(stderr, "Error Object::loadImage() Couldn't load the image into the surface\n");
+		return false;
 	}
-	Surf_Return = SDL_DisplayFormat(Surf);
-	SDL_FreeSurface(Surf);
-	return Surf_Return;
-	
+	this->width  = this->surface->w;
+	this->height = this->surface->h;
+	return true;
 }
 
-/* 
+/**
  * Render all the SDL surface of the object into the
  * (X,Y) position of the destiny surface
  */
 bool Object::renderObject(SDL_Surface* surface, int X, int Y) {
-	if(surface == NULL || this->objectSurface == NULL) {
+	if(surface == NULL || this->surface == NULL) {
 		return false;
 	}
 	
@@ -105,56 +137,120 @@ bool Object::renderObject(SDL_Surface* surface, int X, int Y) {
 	
 	rectangle.x = X;
 	rectangle.y = Y;
-	SDL_BlitSurface(this->objectSurface, NULL, surface, &rectangle);
-	
+	if (this->surface->w > surface->w || this->surface->h > surface->w)
+	{
+		SDL_Rect *srcRectangle= new SDL_Rect();
+		srcRectangle->x = 0;
+		srcRectangle->y = 0;
+		srcRectangle->w = surface->w;
+		srcRectangle->h = surface->h;
+		SDL_BlitSurface(this->surface, srcRectangle, surface, &rectangle);
+	}
+	else
+	{
+		SDL_BlitSurface(this->surface, NULL, surface, &rectangle);
+	}
 	return true;
 }
 
-/*
+/**
  * Render a part of the SDL surface of the object into the
  * (X1,Y1) position inside the destiny surface
  */
+
 bool Object::renderObject(SDL_Surface *surface,
 						  int X1, int Y1,
 						  int X2, int Y2,
 						  int W,  int H
 						)
 {
-	if(surface == NULL || this->objectSurface == NULL) {
+	if(surface == NULL || this->surface == NULL) {
 		return false;
 	}
 	
-	SDL_Rect destRectangle;
+	SDL_Rect *destRectangle= new SDL_Rect();
 	
-	destRectangle.x = X1;
-	destRectangle.y = Y1;
-	
-	SDL_Rect srcRectangle;
-	
-	srcRectangle.x = X2;
-	srcRectangle.y = Y2;
-	srcRectangle.w = W;
-	srcRectangle.h = H;
-	
+	destRectangle->x = X1;
+	destRectangle->y = Y1;
+//	printf("%d %d\n",X1,Y1);
+	SDL_Rect *srcRectangle= new SDL_Rect();
+//	printf("%d %d %d %d\n\n",W,H,X2,Y2);
+	srcRectangle->x = X2*W;
+	srcRectangle->y = Y2*H;
+	srcRectangle->w = W;
+	srcRectangle->h = H;
 	SDL_BlitSurface(
+					 this->surface,
+					 srcRectangle,
 					 surface,
-					 &srcRectangle,
-					 this->objectSurface,
-					 &destRectangle
+					 destRectangle
 				);
 	
 	return true;
-	
 }
 
+/*
+ * Generic render function. Call this->renderObject() with different
+ * arguments depending on this->animated value
+ */
 bool Object::render(SDL_Surface *surface)
 {
-	if (this->animated)
+	if (this->isSprite == true)
 	{
+		if (this->animated)
+		{
+			if (!this->verticalAnimation)
+			{
+				if (this->columns-1 > this->currentFrameX)
+				{
+					this->currentFrameX += 1;
+				}
+				else
+				{
+					this->currentFrameX = 0;
+				}
+			}
+			else
+			{
+				if (this->rows-1 > this->currentFrameY)
+				{
+					this->currentFrameY += 1;
+				}
+				else
+				{
+					this->currentFrameY = 0;
+				}
+			}
+		}
+		else
+		{
+			if (!this->verticalAnimation && this->currentFrameX != 0)
+			{
+				if (this->columns-1 > this->currentFrameX)
+				{
+					this->currentFrameX += 1;
+				}
+				else
+				{
+					this->currentFrameX = 0;
+				}
+			}
+			else if (this->verticalAnimation && this->currentFrameY != 0)
+			{
+				if (this->rows-1 > this->currentFrameY)
+				{
+					this->currentFrameY += 1;
+				}
+				else
+				{
+					this->currentFrameY = 0;
+				}
+			}
+		}
 		return renderObject(surface,
-							X, Y,
-							currentFrameX, currentFrameY,
-							width, height
+							this->X, this->Y,
+							this->currentFrameX, this->currentFrameY,
+							this->width, this->height
 							);
 	}
 	else
@@ -163,30 +259,35 @@ bool Object::render(SDL_Surface *surface)
 	}
 }
 
-/*
+/**
  * Make the object surface's pixel with the same RBG transparents
  */
+
 bool Object::makeTransparent(int R, int G, int B)
 {
-	if(this->objectSurface == NULL)
+	if(this->surface == NULL)
 	{
 		return false;
 	}
-	
-	SDL_SetColorKey(
-					this->objectSurface,
-					SDL_SRCCOLORKEY | SDL_RLEACCEL,
-					SDL_MapRGB(this->objectSurface->format, R, G, B)
+	  this->surface->format->Amask = 0xFF000000;
+		this->surface->format->Ashift = 24;
+	SDL_SetColorKey( this->surface,
+					 SDL_SRCCOLORKEY | SDL_RLEACCEL,
+					 SDL_MapRGB( this->surface->format,
+							     R, G, B
+							)
 				);
-	
 	return true;
 }
 
+
+/**
+ * Free allocated memory of Object class
+ */
 void Object::release()
 {
 	for (int i = 0 ; i < action.size() ; i++)
 	{
 		action[i].release();
 	}
-	free(this->objectSurface);
 }

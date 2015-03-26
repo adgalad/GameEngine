@@ -9,37 +9,45 @@
 #ifndef __GameEngine__Object__
 #define __GameEngine__Object__
 
+#include <memory.h>
 #include <stdio.h>
 #include <vector>
 #include "SDLHeader.h"
 #include "ObjectAction.h"
 
+
 using namespace std;
 
-class Instance;
+
 
 class Object
 {
-	
-/** Object Attributes **/
-protected:
-	SDL_Surface *objectSurface;
-	Instance *instance; // Every object have its own instance
-	int X, Y;
-	int columns, rows;
-	int width, height;
-	int animated;
-	int currentFrameX, currentFrameY;
+		/* * * * * * * * */
+		/*  ATTRIBUTES   */
+		/* * * * * * * * */
 	
 public:
 	vector<unique_ptr<ObjectAction>> action;
+	SDL_TimerID timer;
+	int         columns, rows;
+	int         currentFrameX, currentFrameY;
+	bool        animated;
+	bool		isSprite;
+	bool        verticalAnimation;
 
+public:
+	SDL_Surface *surface;
+	int  X, Y;
+	int  width, height;
 	
-/** Object Functions **/
-
+	
+		/* * * * * * * */
+		/*  FUNCTIONS  */
+		/* * * * * * * */
 protected:
 	
 public:
+		/* CONSTRUCTORS */
 	Object();
 	
 	Object(SDL_Surface *surface);
@@ -55,14 +63,20 @@ public:
 	bool setCurrentFrame(int positionX, int positionY);
 	
 	void setAnimated(bool value);
+	
+	void setAnimate(int columns, int rows);
+	
+	void setInstance(Instance *instance);
 
 		/* GET FUNSTIONS */
 
-	int getCurrentFrameX();
+	int  getCurrentFrameX();
 	
-	int getCurentFrameY();
+	int  getCurentFrameY();
 	
 	void addAction(ObjectAction *action);
+	
+		/* CLASS FUNCTIONS */
 	
 	bool renderObject(SDL_Surface *surface,int X, int Y);
 	
@@ -77,8 +91,10 @@ public:
 	bool loadImage(char* file);
 	
 	bool makeTransparent(int R, int G, int B);
+
+
 	
-	/* DESTRUCTOR */
+		/* DESTRUCTOR */
 	void release();
 };
 

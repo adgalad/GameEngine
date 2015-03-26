@@ -1,5 +1,5 @@
 //
-//  Tile.h
+//  Background.h
 //  GameEngine
 //
 //  Created by Carlos Spaggiari on 3/9/15.
@@ -10,14 +10,23 @@
 #define __GameEngine__Tile__
 
 #include <stdio.h>
-#include "Object.h"
-class Tile : public Object
+#include "Entity.h"
+
+class Entity;
+
+class Background : public Object
 {
-	vector<unique_ptr<Object>> objects;
+protected:
+
+
+public:
+		vector<unique_ptr<Entity>> entities;
+protected:
 	
-	Tile();
+public:
+	Background();
 	
-	void addObject(Object *object);
+	void addEntity(Entity *entitie);
 	
 	bool render(SDL_Surface *surface);
 	

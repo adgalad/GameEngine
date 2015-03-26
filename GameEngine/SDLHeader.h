@@ -14,4 +14,13 @@
 #include <SDL_mixer/SDL_mixer.h>
 #include <SDL_ttf/SDL_ttf.h>
 
+class Game;
+class Instance;
+class Object;
+class Background;
+class Entity;
+class Player;
+class Camera;
+
+
 #endif

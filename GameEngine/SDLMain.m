@@ -219,7 +219,6 @@ static void CustomApplicationMain (int argc, char **argv)
     [NSApp setMainMenu:[[NSMenu alloc] init]];
     setApplicationMenu();
     setupWindowMenu();
-
     /* Create SDLMain and make it the app delegate */
     sdlMain = [[SDLMain alloc] init];
     [NSApp setDelegate:sdlMain];

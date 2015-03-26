@@ -11,11 +11,14 @@
 
 #include "SDLHeader.h"
 
-class ObjectAction
+
+class Object;
+
+class ObjectAction 
 {
 	/** ATTRIBUTES */
 protected:
-
+	Object *Object;
 public:
 	
 	
