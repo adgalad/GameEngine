@@ -23,7 +23,8 @@ public:
 	
 	void release();
 	
-	bool render(SDL_Surface *src, SDL_Surface *dest,int X, int Y, int W, int H);
+	bool render(SDL_Renderer *renderer, SDL_Surface* destSurface,int X, int Y, int W, int H);
+
 	
 };
 

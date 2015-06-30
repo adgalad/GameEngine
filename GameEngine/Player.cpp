@@ -14,40 +14,50 @@ Player::Player()
 }
 
 
-void Player::moveLeft(SDL_Event *event)
+void Player::moveLeft(Uint8 *keyStates)
 {
 	if (this->velocityX > 0) this->velocityX = 0;
-	if(this->velocityX > -8)
+	
+	if (this->velocityX > -maxWalkVelocityX)
 	{
-		this->velocityX -= 4;
+		this->velocityX -= maxWalkVelocityX/4;
 	}
-	if(event->key.keysym.mod & KMOD_ALT && this->velocityX > -32)
+	
+	if(keyStates[SDL_GetScancodeFromKey(SDLK_LALT)] and
+	   this->velocityX > -2*maxSprintVelocityX)
 	{
-		this->velocityX -= 4;
+		this->velocityX -= maxWalkVelocityX/2;
 	}
-	else if (!(event->key.keysym.mod & KMOD_ALT) && this->velocityX < -8)
+	else if (!(keyStates[SDL_GetScancodeFromKey(SDLK_LALT)]) and
+			   this->velocityX < -maxWalkVelocityX)
 	{
-		this->velocityX = -8;
+		this->velocityX += maxWalkVelocityX/2;
 	}
+	
 	this->currentFrameX = 1;
 	this->animated = true;
 }
 
-void Player::moveRight(SDL_Event *event)
+void Player::moveRight(Uint8 *keyStates)
 {
 	if (this->velocityX < 0) this->velocityX = 0;
-	if(this->velocityX < 8)
+	
+	if (this->velocityX < maxWalkVelocityX)
 	{
-		this->velocityX += 4;
+		this->velocityX += maxWalkVelocityX/4;
 	}
-	if(event->key.keysym.mod & KMOD_ALT && this->velocityX < 32)
+	
+	if (keyStates[SDL_GetScancodeFromKey(SDLK_LALT)] and
+	   this->velocityX < 2*maxSprintVelocityX)
 	{
-		this->velocityX += this->velocityX;
+		this->velocityX += maxWalkVelocityX/2;
 	}
-	else if (!(event->key.keysym.mod & KMOD_ALT) && this->velocityX > 8)
+	else if (!(keyStates[SDL_GetScancodeFromKey(SDLK_LALT)]) and
+			   this->velocityX > maxWalkVelocityX)
 	{
-		this->velocityX = 8;
+		this->velocityX -= maxWalkVelocityX/2;
 	}
+	
 	this->currentFrameX = 0;
 	this->animated = true;
 }
@@ -56,23 +66,64 @@ void Player::moveRight(SDL_Event *event)
 //
 //void Player::moveDown();
 
-void Player::jump(SDL_Event *event)
+void Player::jump(Uint8 *keyStates)
 {
 	if (this->velocityY == 0)
 	{
-		this->velocityY = this->jumpAcceleration;
+		this->velocityY = this->jumpVelocity;
 	}
 }
 
 void Player::stop()
 {
-	if (this->X != 0)
+
+	this->stoped = true;
+	if (this->velocityX == 0)
 	{
-		this->velocityX = 0;
+		this->currentFrameY = 0;
+		this->setAnimated(false);
 	}
-	this->currentFrameY = 0;
-	this->setAnimated(false);
 }
+
+void Player::eventHandler(SDL_Event *event, Uint8 *keyStates)
+{
+	
+	if(keyStates[SDL_GetScancodeFromKey(SDLK_RIGHT)] and
+	   !keyStates[SDL_GetScancodeFromKey(SDLK_LEFT)])
+	{
+		this->stoped = false;
+		this->moveRight(keyStates);
+	}
+	else if(keyStates[SDL_GetScancodeFromKey(SDLK_LEFT)] and
+			!keyStates[SDL_GetScancodeFromKey(SDLK_RIGHT)])
+	{
+		this->stoped = false;
+		this->moveLeft(keyStates);
+	}
+	else
+	{
+		if (this->velocityY == 0)
+			this->stop();
+	}
+	
+	if( keyStates[SDL_GetScancodeFromKey(SDLK_UP)] or
+	    keyStates[SDL_GetScancodeFromKey(SDLK_SPACE)]
+	   )
+	{
+		this->jump(keyStates);
+	}
+	
+	switch (event->key.keysym.sym)
+	{
+		case SDLK_m:
+			this->X = 300;
+			this->Y = 600;
+			break;
+		default:
+			break;
+	}
+}
+
 
 void Player::release()
 {

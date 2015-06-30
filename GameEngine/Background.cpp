@@ -10,7 +10,8 @@
 #include "Entity.h"
 Background::Background()
 {
-
+	this->X = 0;
+	this->Y = 0;
 }
 
 void Background::addEntity(Entity *entity)
@@ -23,19 +24,34 @@ void Background::addEntity(Entity *entity)
 	this->entities.push_back(unique_ptr<Entity>(entity));
 }
 
-bool Background::render(SDL_Surface *surface)
+
+
+void Background::setBackgroundEnviromentValues( int *winWidth, int *winHeight,
+											    int *cameraX,  int *cameraY
+									 )
 {
-	Object::render(surface);
+	if (!isStatic)
+	Object::setEnvironmentValues(winWidth, winHeight, cameraX, cameraY);
+	
+	for (int i = 0; i < (int)this->entities.size(); i++) {
+		this->entities[i]
+			->setEnvironmentValues( winWidth, winHeight,
+									cameraX, cameraY
+								);
+	}
+}
+
+bool Background::render(SDL_Renderer *renderer)
+{
+	Object::render(renderer);
+	bool returnValue = true;
+
 	for (int i = 0; i < entities.size(); i++)
 	{
-		if (not(entities[i]->render(surface)))
-		{
-			fprintf(stderr, "Couldn't render the object\n");
-			return false;
-		}
+		returnValue &= entities[i]->render(renderer);
 	}
 
-	return true;
+	return returnValue;
 }
 
 void Background::release()
@@ -45,3 +61,4 @@ void Background::release()
 		this->entities[i].release();
 	}
 }
+

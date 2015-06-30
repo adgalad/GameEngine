@@ -10,6 +10,7 @@
 #define __GameEngine__Entity__
 
 #include <stdio.h>
+#include "SDLHeader.h"
 #include "Object.h"
 #include "Background.h"
 
@@ -22,13 +23,13 @@ public:
 	
 	bool active;
 	bool movable;
+	bool stoped;
 	bool iscollision;
 
-	int    _id;
 	int    direction;
 	float  velocityX;
 	float  velocityY;
-	float  jumpAcceleration;
+	float  jumpVelocity;
 	float  gravity;
 
 public:
@@ -39,7 +40,7 @@ protected:
 public:
 	Entity();
 	
-	Entity(SDL_Surface *surface);
+	Entity(SDL_Surface* surface, SDL_Renderer *renderer);
 	
 	void setBackground(Background *bg);
 	
@@ -47,10 +48,11 @@ public:
 	
 	void movement();
 
-	bool render(SDL_Surface *surface);
+	virtual bool render(SDL_Renderer *renderer);
 	
 	void release();
 	
+	virtual void eventHandler(SDL_Event *event,Uint8 *keyStates);
 	
 };
 

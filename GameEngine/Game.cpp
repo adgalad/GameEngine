@@ -9,15 +9,19 @@
 #include "Game.h"
 #include "Camera.h"
 
-Game::Game()
+Game::Game(int width, int height)
 {
 	this->event         = new SDL_Event();
-	this->player        = std::unique_ptr<Player>(new Player());
-	this->background	= std::unique_ptr<Background>(new Background());
+	this->player        = NULL;
+	this->background	= NULL;
+	this->renderer		= NULL;
+	this->camera		= NULL;
 	this->maxFPS        = 24;
 	this->sideScrolling = false;
-	this->width			= 628;
-	this->height		= 628;
+	this->width			= width;
+	this->height		= height;
+	this->X				= 0;
+	this->Y				= 0;
 }
 
 void Game::setMaxFPS(int FPS)
@@ -29,36 +33,38 @@ bool Game::init()
 	/* Init SDL */
 	if (SDL_Init(SDL_INIT_EVERYTHING)<0)
 	{
+		fprintf(stderr, "ERROR Game::init() Couldn't initialize SDL\n\t%s\n",SDL_GetError());
 		return false;
 	}
-	/*
-				Uso futuro
-		const SDL_VideoInfo *VideoInfo;
-		VideoInfo = SDL_GetVideoInfo();
-		int h=VideoInfo->current_h;
-		int w=VideoInfo->current_w;
-	*/
 
-	/* Set Video Mode */
-	if (NULL==( mainSurface = SDL_SetVideoMode(this->width,this->height, 32,
-											   SDL_HWSURFACE|SDL_DOUBLEBUF)
-				                              )
+	if (NULL==( mainWindow = SDL_CreateWindow("Game Engine - SDL",
+											   SDL_WINDOWPOS_UNDEFINED,
+											   SDL_WINDOWPOS_UNDEFINED,
+											   this->width, this->height,
+											   SDL_WINDOW_OPENGL |
+											   SDL_WINDOW_RESIZABLE))
 		)
 	{
+		fprintf(stderr, "ERROR Game::init() Main Window is NULL pointer\n\t%s\n",SDL_GetError());
 		return false;
 	}
-
-	canvas = new SDL_Surface();
+	
+	this->renderer = SDL_CreateRenderer(this->mainWindow, -1,
+										SDL_RENDERER_TARGETTEXTURE |
+										SDL_RENDERER_ACCELERATED );
+	if (this->renderer == NULL)
+	{
+		
+		fprintf(stderr,"ERROR Game::init() Renderer assigned is NULL pointer\n\t%s\n",SDL_GetError());
+		return false;
+	}
+	
+	SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 255);
+	SDL_RenderClear(this->renderer);
 
 	
+	this->camera = new Camera();
 
-
-	/* Set Unicode Translate */
-	SDL_EnableUNICODE(1);
-	
-	/* Enable Key Repeat */
-	SDL_EnableKeyRepeat(1, SDL_DEFAULT_REPEAT_INTERVAL / 3);
-	
 	/*Enable Music mixer */
 //	Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
 //	moveSound = Mix_LoadMUS("/Users/carlosspaggiari/Desktop/C-C++/PROYECTOS/Chess/Chess/Resource/moveSound.wav");
@@ -68,7 +74,7 @@ bool Game::init()
 //		return false;
 //	}
 	if (TTF_Init() != 0){
-		printf("Couldn't load TTF\n");
+		printf("ERROR Game::init() Couldn't load TTF\n\t%s\n",SDL_GetError());
 		return false;
 	}
 	
@@ -79,24 +85,20 @@ bool Game::init()
 
 bool Game::run()
 {
+	this->updateGameXYPos();
+	this->setEnvironmentValues( &this->width, &this->height,
+							    &this->X, &this->Y
+							);
 	while (this->running) {
-		this->render();
-		this->loop();
-
-		if (SDL_PollEvent(this->event))
+		
+		if (!this->eventHandler())
 		{
-			if (!this->eventHandler())
-			{
-				return false;
-			}
+			return false;
 		}
-		else{
-
-			if (!this->keyHandler())
-			{
-				return false;
-			}
-		}
+		this->updateGameXYPos();
+		this->loop();
+		this->render();
+		
 		SDL_Delay(this->maxFPS);
 	}
 	return true;
@@ -104,108 +106,78 @@ bool Game::run()
 
 void Game::addPlayer(Player *player)
 {
+	if (player == NULL)
+	{
+		fprintf(stderr, "WARNING Game::addPlayer(Player*) player assigned is NULL pointer");
+		return;
+	}
 	this->player = std::unique_ptr<Player>(player);
 	if (this->background != NULL)
 	{
 		this->player->setBackground(this->background.get());
 	}
+	else
+	{
+		fprintf(stderr, "WARNING Game::addPlayer(Player*) this->background is NULL pointer");
+	}
 }
 void Game::addBackground(Background *bg)
 {
 	this->background = std::unique_ptr<Background>(bg);
-	Uint32 rmask, gmask, bmask, amask;
-	
-	/* SDL interprets each pixel as a 32-bit number, so our masks must depend
-	 on the endianness (byte order) of the machine */
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-	rmask = 0xff000000;
-	gmask = 0x00ff0000;
-	bmask = 0x0000ff00;
-	amask = 0x000000ff;
-#else
-	rmask = 0x000000ff;
-	gmask = 0x0000ff00;
-	bmask = 0x00ff0000;
-	amask = 0xff000000;
-#endif
-	
-	this->canvas = SDL_CreateRGBSurface(
-										0,
-										this->background->surface->w,
-										this->background->surface->h,
-										32,
-										amask,
-										bmask,
-										gmask,
-										rmask
-								   );
 }
+
+void Game::setRenderer(SDL_Renderer *renderer)
+{
+	this->renderer = renderer;
+}
+
 bool Game::render()
 {
-	this->background->render(this->canvas);
-	this->player->render(this->canvas);
-	
-	this->camera->render(this->canvas,
-						 this->mainSurface,
-						 this->player->X,
-						 this->player->Y,
-						 this->mainSurface->w,
- 						 this->mainSurface->h);
-	
-	SDL_Flip(this->mainSurface);
-	SDL_FillRect(this->mainSurface, NULL, 0x000000);
-	return true;
+	if ( this->background->render(this->renderer) and
+		 this->player->render(this->renderer)
+		)
+	{
+		SDL_RenderPresent(this->renderer);
+		SDL_RenderClear(this->renderer);
+		return true;
+	}
+	this->running = false;
+	return false;
 }
 
-bool Game::keyHandler()
-{
-	Uint8 *keystates = SDL_GetKeyState( NULL );
 
-	if (keystates[SDLK_ESCAPE])
-	{
-		this->running = false;
-	}
-	if(keystates[SDLK_RIGHT])
-	{
-		this->player->moveRight(this->event);
-	}
-	else if(keystates[SDLK_LEFT])
-	{
-		this->player->moveLeft(this->event);
-	}
-	else
-	{
-		this->player->stop();
-	}
-	
-	if(keystates[SDLK_UP] || keystates[SDLK_SPACE])
-	{
-		this->player->jump(this->event);
-	}
-	else
-	{
-		switch (this->event->key.keysym.unicode) {
-			case 'n':
-				this->running = false;
-				break;
-			default:
-				break;
-		}
-	}
-	return true;
-}
 
 bool Game::eventHandler()
 {
+	Uint8 *keyStates = (Uint8*)	SDL_GetKeyboardState(NULL);
+	if(SDL_PollEvent(this->event))
+	{
+		switch (this->event->type) {
+			case SDL_QUIT:
+				this->running = false;
+				break;
+			case SDL_KEYDOWN:
+				if (keyStates[SDL_GetScancodeFromKey(SDLK_ESCAPE)])
+				{
+					this->running = false;
+				}
+				switch (this->event->key.keysym.sym) {
+					case SDLK_n:
+						this->running = false;
+						break;
 
-	switch (this->event->type) {
-		case SDL_QUIT:
-			this->running = false;
-			break;
+					default:
+						break;
+				}
+			default:
 
-		default:
-			this->keyHandler();
-			break;
+				break;
+		}
+	}
+	if(this->player != NULL)
+	{
+		//		printf("(%d %d)   (%d %d)\n",player->X, player->Y, this->player->X - this->width/2, this->player->Y - this->height/2);
+		this->player->eventHandler(event, keyStates);
 	}
 	return true;
 }
@@ -216,12 +188,45 @@ bool Game::loop()
 
 void Game::release()
 {
-	SDL_FreeSurface(this->mainSurface);
-	SDL_FreeSurface(this->canvas);
+	SDL_DestroyWindow(this->mainWindow);
+
 	free(this->event);
 	this->player->release();
 	this->player.release();
 	this->background->release();
 	this->background.release();
+}
+
+void Game::loadParameterValues(string str)
+{
+	this->loader->loadParameters(str);
+}
+
+
+void Game::updateGameXYPos()
+{
+	int w,h;
+	SDL_GetWindowSize(this->mainWindow, &w, &h);
+	this->width = w;
+	this->height = h;
+	if (this->player != NULL)
+	{
+		this->X = this->player->X - this->width/2;
+		this->Y = this->player->Y - this->height/2;
+	}
+	else
+	{
+		this->X = this->Y = 0;
+	}
+}
+
+void Game::setEnvironmentValues( int *winWidth, int *winHeight,
+								 int *cameraX,  int *cameraY
+							)
+{
+	this->background->setBackgroundEnviromentValues( winWidth, winHeight,
+													  cameraX,  cameraY
+													 );
+	this->player->setEnvironmentValues(winWidth, winHeight, cameraX, cameraY);
 }
 

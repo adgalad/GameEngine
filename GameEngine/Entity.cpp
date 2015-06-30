@@ -9,7 +9,7 @@
 #include "Entity.h"
 
 
-int globalID = 1;
+
 
 Entity::Entity()
 {
@@ -17,36 +17,36 @@ Entity::Entity()
 	
 	this->active			= true;
 	this->movable			= false;
+	this->stoped			= true;
 	this->iscollision		= true;
-	this->_id				= globalID++;
 	this->direction			= 1;
 	this->velocityX			= 0.0;
 	this->velocityY			= 0.0;
-	this->jumpAcceleration	= -40.0;
-	this->gravity			= 6.0;
+	this->jumpVelocity		= jumpAcceleration;
+	this->gravity			= gravtiyAcceleration;
 }
 
-Entity::Entity(SDL_Surface *surface)
+
+
+Entity::Entity(SDL_Surface* surface, SDL_Renderer *renderer)
 {
 	Object::Object();
 	
-	this->surface   = surface;
-	if (this->surface != NULL)
+	this->texture = SDL_CreateTextureFromSurface(renderer, surface);
+	if (this->texture != NULL)
 	{
-		this->width		= this->surface->w;
-		this->height	= this->surface->h;
-		this->active    = true;
-		this->movable   = false;
-		this->iscollision = true;
-		this->_id       = globalID++;
-		this->direction = 1;
-		this->velocityX    = 0.0;
-		this->velocityY    = 0.0;
-		this->gravity   = 4.9;
+		SDL_QueryTexture(this->texture, NULL, NULL, &this->width, &this->height);
+		this->active		= true;
+		this->movable		= false;
+		this->iscollision	= true;
+		this->direction		= 1;
+		this->velocityX		= 0.0;
+		this->velocityY		= 0.0;
+		this->gravity		= 4.9;
 	}
 	else
 	{
-		fprintf(stderr, "Entity::Entity(SDL_Surface *): Surface assigned is NULL pointer\n");
+		fprintf(stderr, "Entity::Entity(SDL_Texture *): Texture assigned is NULL pointer\n");
 	}
 }
 
@@ -63,22 +63,24 @@ void Entity::moveTo(int x, int y)
 bool Entity::collision()
 {
 	bool collision = false;
+	
 	for(int i = 0 ; i < this->background->entities.size(); i++)
 	{
-
-		if(!( this->background->entities[i] == NULL           ||
-			   this->_id == this->background->entities[i]->_id ||
-			  !this->background->entities[i]->iscollision
-			 )
-		)
+		Entity *auxEntity = this->background->entities[i].get();
+		
+		if(not( auxEntity              == NULL       or
+			    auxEntity->id          == this->id   or
+			    auxEntity->iscollision == false
+			   )
+		   )
 		{
 			int leftA, leftB;
 			int rightA, rightB;
 			int topA, topB;
 			int bottomA, bottomB;
 			
-			leftA   = this->X;
-			topA    = this->Y;
+			leftA   = this->X + this->velocityX;
+			topA    = this->Y + this->velocityY;
 			rightA  = this->width  + leftA;
 			bottomA = this->height + topA;
 			
@@ -86,92 +88,253 @@ bool Entity::collision()
 			topB    = this->background->entities[i]->Y;
 			rightB  = this->background->entities[i]->width  + leftB;
 			bottomB = this->background->entities[i]->height + topB;
-			if((bottomA > topB  && topA  < bottomB &&
-				rightA  > leftB && leftA < rightB
-			   ))
+			
+			if( leftA - this->velocityX > leftB and rightA < rightB and
+			   bottomA - this->velocityY < bottomB and topA > topB)
 			{
-				float tempvelocityX = this->velocityX;
-				if (tempvelocityX < 0) tempvelocityX = -tempvelocityX;
+				//printf("Dentro de B\n");
+				this->velocityY = 0;
+				this->velocityX = 0;
+				this->Y = topB - this->height;
+		
+			}
+			if(     ( bottomA > topB  and topA  < bottomB and
+					  rightA  > leftB and leftA < rightB)
+				 or ( leftA > leftB and rightA < rightB and
+					  bottomA < bottomB and topA > topB)
+			   )
+			{
+				collision = true;
 				
-				float tempvelocityY = this->velocityY;
-				if (tempvelocityY < 0) tempvelocityY = -tempvelocityY;
-				//	the right side of square 1 collided
-				//	with the left side of square 2
-				if (leftA < leftB)
+				leftA   = this->X;
+				topA    = this->Y;
+				rightA  = this->width  + leftA;
+				bottomA = this->height + topA;
+				
+				
+				if(bottomA == topB)
 				{
-					if (rightA  - leftB <= tempvelocityX)
-					{
-						this->X = leftB - this->width ;
-						this->velocityX = 0;
-					}
+//					printf("1.1\n");
+					this->X += this->velocityX;
+					this->velocityY = 0;
+					
+				}
+				else if(leftA == rightB or leftB == rightA)
+				{
+//					printf("2.1\n");
+					this->Y += this->velocityY;
+					this->velocityX = 0;
 
 				}
-				//	the left side of square 1 collided
-				//	with the right side of square 2
-				else if (leftA > leftB)
+				else
 				{
-					if (rightB - this->X <= tempvelocityX)
+					
+					float speedX = this->velocityX >= 0 ?
+										this->velocityX : -this->velocityX;
+					
+					float speedY = this->velocityY >= 0 ?
+										this->velocityY : -this->velocityY;
+//					printf("speed %f %f\n",speedX,speedY);
+					float *timeUntilCollisionX = new float;
+					float *timeUntilCollisionY = new float;
+
+					if (this->velocityX > 0)
 					{
-						this->X = rightB;
+						if (this->velocityY < 0)
+						{
+//							printf("3.1.1\n");
+							*timeUntilCollisionX = (leftB - rightA)/
+														speedX;
+							
+							*timeUntilCollisionY = (topA - bottomB)/
+														speedY;
+						}
+						else if (this->velocityY > 0)
+						{
+//							printf("3.1.2\n");
+							*timeUntilCollisionX = (leftB - rightA)/
+														speedX;
+							
+							*timeUntilCollisionY = (topB - bottomA)/
+														speedY;
+						}
+						else
+						{
+//							printf(" 3.1.3\n");
+							*timeUntilCollisionX = (leftB - rightA)/
+														speedX;
+
+							timeUntilCollisionY = NULL;
+						}
+					}
+					else if (this->velocityX < 0)
+					{
+						if (this->velocityY < 0)
+						{
+//							printf("3.2.1\n");
+							*timeUntilCollisionX = (leftA - rightB)/
+							speedX;
+							
+							*timeUntilCollisionY = (topA - bottomB)/
+							speedY;
+						}
+						else if (this->velocityY > 0)
+						{
+//							printf("3.2.2\n");
+							*timeUntilCollisionX = (leftA - rightB)/
+							speedX;
+							
+							*timeUntilCollisionY = (topB - bottomA)/
+							speedY;
+						}
+						else
+						{
+//							printf("3.2.3\n");
+							*timeUntilCollisionX = (leftB - rightA)/
+							speedX;
+							
+							timeUntilCollisionY = NULL;
+						}
+					}
+					else
+					{
+						if (this->velocityY < 0)
+						{
+//							printf("3.3.1\n");
+							timeUntilCollisionX = NULL;
+							
+							*timeUntilCollisionY = (topA - bottomB)/speedY;
+						}
+						else if (this->velocityY > 0)
+						{
+//							printf("3.3.2\n");
+							timeUntilCollisionX = NULL;
+							
+							*timeUntilCollisionY = (topB - bottomA)/speedY;
+						}
+						else
+						{
+//							printf("3.3.3\n");
+							timeUntilCollisionX = NULL;
+							
+							timeUntilCollisionY = NULL;
+						}
+					}
+					
+
+					if (timeUntilCollisionX != NULL && timeUntilCollisionY != NULL)
+					{
+						if(*timeUntilCollisionX > 0 && *timeUntilCollisionY > 0)
+						{
+
+							if (*timeUntilCollisionX <= *timeUntilCollisionY)
+							{
+//								printf("H.1\n");
+								this->X += (int)*timeUntilCollisionX *
+												this->velocityX;
+								
+								this->Y += (int)*timeUntilCollisionX *
+												this->velocityY;
+								this->velocityX = 0;
+							}
+							else
+							{
+//								printf("H.2\n");
+								this->X += (int)	*timeUntilCollisionY *
+												this->velocityX;
+								
+								this->Y += (int)	*timeUntilCollisionY *
+												this->velocityY;
+								this->velocityY = 0;
+							}
+						}
+						else if (*timeUntilCollisionX < 0 && *timeUntilCollisionY >= 0)
+						{
+//							printf("H.3\n");
+							this->Y += *timeUntilCollisionY * this->velocityY;
+							this->X += this->velocityX;
+							this->velocityY = 0;
+						}
+						else if (*timeUntilCollisionY < 0 && *timeUntilCollisionX >= 0)
+						{
+//							printf("H.4\n");
+							this->X += *timeUntilCollisionX * this->velocityX;
+							this->Y += this->velocityY;
+							this->velocityX = 0;
+						}
+					}
+					else if (timeUntilCollisionX == NULL and timeUntilCollisionY != NULL)
+					{
+//						printf("J.1\n");
+						if (this->velocityY > 0)
+							this->Y = topB - this->height;
+						else
+							this->Y = bottomB;
+						this->velocityY = 0;
+					}
+					else if(timeUntilCollisionY == NULL and timeUntilCollisionX != NULL)
+					{
+//						printf("J.2\n");
+						if (this->velocityX > 0)
+							this->X = leftB - this->width;
+						else
+							this->X = rightB;
 						this->velocityX = 0;
 					}
 				}
-				//	the bottom side of square 1 collided
-				//	with the top side of square 2
-				if (topA < topB)
-				{
-					if (bottomA - topB <= tempvelocityY)
-					{
-						this->Y = topB - this->height ;
-						this->velocityY = 0;
-					}
-				}
-				//	the top side of square 1 collided
-				//	with the bottom side of square 2
-				else if ( topA > topB)
-				{
-					if (bottomB - this->Y <= tempvelocityY)
-					{
-						this->Y = bottomB;
-						this->velocityY = 0.1;
-					}
-				}
-				collision = true;
 			}
 		}
+	}
+
+	if (not collision)
+	{
+		this->X += this->velocityX;
+		this->Y += this->velocityY;
 	}
 	return collision;
 }
 
 void Entity::movement()
 {
-
+	
 	if(this->movable)
 	{
-
-		
-		this->X += this->velocityX;
 		this->velocityY += this->gravity;
-		this->Y += (this->velocityY);
-		
-		if ((this->collision()))
+		if(this->stoped)
 		{
-
+			if (this->velocityX < 0) {
+				this->velocityX += 8;
+				if (this->velocityX > -2)
+				{
+					this->velocityX = 0;
+				}
+			}
+			else if (this->velocityX > 0)
+			{
+				this->velocityX -= 8;
+				if (this->velocityX < 2)
+				{
+					this->velocityX = 0;
+				}
+			}
 		}
-
-		
-
+		this->collision();
 	}
 }
 
-bool Entity::render(SDL_Surface *surface)
+bool Entity::render(SDL_Renderer *renderer)
 {
 	this->movement();
-	return Object::render(surface);
+	return Object::render(renderer);
 	
 }
 
 void Entity::release()
 {
 	Object::release();
+}
+
+void Entity::eventHandler(SDL_Event *event,Uint8 *keyStates)
+{
+	
 }

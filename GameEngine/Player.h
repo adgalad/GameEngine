@@ -10,6 +10,7 @@
 #define __GameEngine__Player__
 
 #include <stdio.h>
+#include "SDLHeader.h"
 #include "Entity.h"
 
 class Player : public Entity
@@ -18,17 +19,21 @@ class Player : public Entity
 public:
 	Player();
 	
-	void moveLeft(SDL_Event *event);
+	/* Movement Methods */
+	void moveLeft(Uint8 *keyStatus);
 	
-	void moveRight(SDL_Event *event);
+	void moveRight(Uint8 *keyStatus);
 	
-	void moveUp(SDL_Event *event);
+	void moveUp(Uint8 *keyStatus);
 	
-	void moveDown(SDL_Event *event);
+	void moveDown(Uint8 *keyStatus);
 	
-	void jump(SDL_Event *event);
+	void jump(Uint8 *keyStatus);
 	
 	void stop();
+	
+	/* Control Methods */
+	void eventHandler(SDL_Event *event,Uint8 *keyStates);
 	
 	void release();
 };

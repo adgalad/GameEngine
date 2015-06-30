@@ -1,0 +1,4 @@
+maxVelocityX = 10;
+maxVelocityY = 10;
+jumpAceleration = 40;
+gravity = 9.8

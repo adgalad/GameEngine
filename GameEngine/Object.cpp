@@ -8,53 +8,51 @@
 
 #include "Object.h"
 
+int Object::_id = 0;
 
 Object::Object()
 {
-	this->surface           = NULL;
+
+	this->texture           = NULL;
+	this->id				= this->_id++;
 	this->X                 = 0;
 	this->Y                 = 0;
 	this->isSprite			= false;
+	this->isStatic			= false;
 	this->animated          = false;
 	this->verticalAnimation = true;
+		printf("ID %d \n",id);
 }
 
-Object::Object(SDL_Surface *surface)
+Object::Object(SDL_Surface *surface, SDL_Renderer *renderer)
 {
-	this->surface = surface;
-	if (this->surface != NULL)
+	this->texture = SDL_CreateTextureFromSurface(renderer, surface);
+	if (this->texture != NULL)
 	{
+		SDL_QueryTexture(this->texture, NULL, NULL, &this->width, &this->height);
+		this->id				= this->_id++;
 		this->X					= 0;
 		this->Y					= 0;
-		this->width				= this->surface->w;
-		this->height			= this->surface->h;
 		this->isSprite			= false;
+		this->isStatic			= false;
 		this->animated			= false;
 		this->verticalAnimation = true;
 	}
 	else
 	{
-		fprintf(stderr, "Object::Object(SDL_Surface *): Surface assigned is NULL pointer\n");
+		fprintf(stderr, "Object::Object(SDL_Texture *): Surface assigned is NULL pointer\n");
 	}
-
+	printf("%d \n",id);
 }
 
-Object::Object(SDL_Surface *surface,
-					   int  columns,
-					   int  rows,
-			           int  width,
-			           int  height
-			   )
+void Object::setStatic(bool value)
 {
-	this->surface			= surface;
-	this->columns			= columns;
-	this->rows				= rows;
-	this->width				= width;
-	this->height			= height;
-	this->animated			= true;
-	this->currentFrameX		= 0;
-	this->currentFrameY		= 0;
-	this->verticalAnimation = true;
+	this->isStatic = value;
+	if (this->isStatic)
+	{
+		this->cameraX = NULL;
+		this->cameraY = NULL;
+	}
 }
 
 bool Object::setCurrentFrame(int positionX, int positionY)
@@ -75,16 +73,17 @@ bool Object::setCurrentFrame(int positionX, int positionY)
 void Object::setAnimated(bool value)
 {
 	this->animated = value;
+
 }
 
-void Object::setAnimate(int columns, int rows)
+void Object::setAnimateValues(int columns, int rows)
 {
-	if (this->surface != NULL)
+	if (this->texture != NULL)
 	{
 		this->columns		= columns;
 		this->rows			= rows;
-		this->width			= this->surface->w/columns;
-		this->height		= this->surface->h/rows;
+		this->width			= this->width/columns;
+		this->height		= this->height/rows;
 		this->currentFrameX = 0;
 		this->currentFrameY = 0;
 		this->isSprite		= true;
@@ -112,44 +111,42 @@ void Object::addAction(ObjectAction *action)
 /**
  * Load an image to the SDL surface of the object
  */
-bool Object::loadImage(char* file)
+bool Object::loadImage(string file, SDL_Renderer *renderer)
 {
-	if ((this->surface = IMG_Load(file))==NULL)
+	SDL_Surface *surface;
+	if ((surface = IMG_Load(&file[0]))==NULL)
 	{
 		fprintf(stderr, "Error Object::loadImage() Couldn't load the image into the surface\n");
 		return false;
 	}
-	this->width  = this->surface->w;
-	this->height = this->surface->h;
+
+	this->width  = surface->w;
+	this->height = surface->h;
+	this->texture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
 	return true;
 }
 
 /**
  * Render all the SDL surface of the object into the
- * (X,Y) position of the destiny surface
+ * (X,Y) position in the destiny surface
  */
-bool Object::renderObject(SDL_Surface* surface, int X, int Y) {
-	if(surface == NULL || this->surface == NULL) {
+bool Object::renderObject(SDL_Renderer *renderer, int X, int Y) {
+	if(renderer == NULL or this->texture == NULL) {
+		fprintf(stderr, "Error Object::renderObject() Couldn't render the object (not animated) \n");
 		return false;
 	}
 	
 	SDL_Rect rectangle;
-	
 	rectangle.x = X;
 	rectangle.y = Y;
-	if (this->surface->w > surface->w || this->surface->h > surface->w)
-	{
-		SDL_Rect *srcRectangle= new SDL_Rect();
-		srcRectangle->x = 0;
-		srcRectangle->y = 0;
-		srcRectangle->w = surface->w;
-		srcRectangle->h = surface->h;
-		SDL_BlitSurface(this->surface, srcRectangle, surface, &rectangle);
-	}
-	else
-	{
-		SDL_BlitSurface(this->surface, NULL, surface, &rectangle);
-	}
+	rectangle.w = this->width;
+	rectangle.h = this->height;
+	SDL_RenderCopy( renderer,
+				    this->texture,
+				    NULL,
+				    &rectangle
+				);
 	return true;
 }
 
@@ -158,33 +155,34 @@ bool Object::renderObject(SDL_Surface* surface, int X, int Y) {
  * (X1,Y1) position inside the destiny surface
  */
 
-bool Object::renderObject(SDL_Surface *surface,
+bool Object::renderObject(SDL_Renderer *renderer,
 						  int X1, int Y1,
 						  int X2, int Y2,
 						  int W,  int H
 						)
 {
-	if(surface == NULL || this->surface == NULL) {
+	if(renderer == NULL or this->texture == NULL) {
+		fprintf(stderr, "Error Object::renderObject() Couldn't render the object \n");
 		return false;
 	}
 	
-	SDL_Rect *destRectangle= new SDL_Rect();
+	SDL_Rect destRectangle;
+	destRectangle.x = X1;
+	destRectangle.y = Y1;
+	destRectangle.w = W;
+	destRectangle.h = H;
+
+	SDL_Rect srcRectangle;
+	srcRectangle.x = X2*W;
+	srcRectangle.y = Y2*H;
+	srcRectangle.w = W;
+	srcRectangle.h = H;
 	
-	destRectangle->x = X1;
-	destRectangle->y = Y1;
-//	printf("%d %d\n",X1,Y1);
-	SDL_Rect *srcRectangle= new SDL_Rect();
-//	printf("%d %d %d %d\n\n",W,H,X2,Y2);
-	srcRectangle->x = X2*W;
-	srcRectangle->y = Y2*H;
-	srcRectangle->w = W;
-	srcRectangle->h = H;
-	SDL_BlitSurface(
-					 this->surface,
-					 srcRectangle,
-					 surface,
-					 destRectangle
-				);
+	SDL_RenderCopy( renderer,
+				   this->texture,
+				   &srcRectangle,
+				   &destRectangle
+				   );
 	
 	return true;
 }
@@ -193,9 +191,9 @@ bool Object::renderObject(SDL_Surface *surface,
  * Generic render function. Call this->renderObject() with different
  * arguments depending on this->animated value
  */
-bool Object::render(SDL_Surface *surface)
+bool Object::render(SDL_Renderer* renderer)
 {
-	if (this->isSprite == true)
+	if (this->isSprite)
 	{
 		if (this->animated)
 		{
@@ -224,7 +222,7 @@ bool Object::render(SDL_Surface *surface)
 		}
 		else
 		{
-			if (!this->verticalAnimation && this->currentFrameX != 0)
+			if (!this->verticalAnimation and this->currentFrameX != 0)
 			{
 				if (this->columns-1 > this->currentFrameX)
 				{
@@ -235,7 +233,7 @@ bool Object::render(SDL_Surface *surface)
 					this->currentFrameX = 0;
 				}
 			}
-			else if (this->verticalAnimation && this->currentFrameY != 0)
+			else if (this->verticalAnimation and this->currentFrameY != 0)
 			{
 				if (this->rows-1 > this->currentFrameY)
 				{
@@ -247,38 +245,52 @@ bool Object::render(SDL_Surface *surface)
 				}
 			}
 		}
-		return renderObject(surface,
-							this->X, this->Y,
-							this->currentFrameX, this->currentFrameY,
-							this->width, this->height
-							);
+		if (this->cameraX != NULL)
+		{
+			return renderObject( renderer,
+								this->X - *this->cameraX,
+								this->Y - *this->cameraY,
+								this->currentFrameX,
+								this->currentFrameY,
+								this->width,
+								this->height
+								);
+		}
+		else
+		{
+			return renderObject( renderer,
+								this->X,
+								this->Y,
+								this->currentFrameX,
+								this->currentFrameY,
+								this->width,
+								this->height
+								);
+		}
+
+
 	}
 	else
 	{
-		return renderObject(surface, X, Y);
+		if (this->cameraX != NULL)
+		{
+			return renderObject( renderer,
+								this->X - *this->cameraX,
+								this->Y - *this->cameraY
+								);
+		}
+		else
+		{
+			return renderObject( renderer,
+								this->X,
+								this->Y
+								);
+		}
 	}
 }
 
-/**
- * Make the object surface's pixel with the same RBG transparents
- */
 
-bool Object::makeTransparent(int R, int G, int B)
-{
-	if(this->surface == NULL)
-	{
-		return false;
-	}
-	  this->surface->format->Amask = 0xFF000000;
-		this->surface->format->Ashift = 24;
-	SDL_SetColorKey( this->surface,
-					 SDL_SRCCOLORKEY | SDL_RLEACCEL,
-					 SDL_MapRGB( this->surface->format,
-							     R, G, B
-							)
-				);
-	return true;
-}
+
 
 
 /**
@@ -289,5 +301,18 @@ void Object::release()
 	for (int i = 0 ; i < action.size() ; i++)
 	{
 		action[i].release();
+	}
+}
+
+void Object::setEnvironmentValues( int *winWidth, int *winHeight,
+								   int *cameraX,  int *cameraY
+								)
+{
+	this->winWidth  = winWidth;
+	this->winHeight = winHeight;
+	if (!this->isStatic)
+	{
+		this->cameraX = cameraX;
+		this->cameraY = cameraY;
 	}
 }

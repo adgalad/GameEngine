@@ -10,7 +10,7 @@
 
 Camera::Camera()
 {
-	
+
 }
 
 
@@ -20,11 +20,11 @@ void Camera::release()
 	
 }
 
-bool Camera::render(SDL_Surface *src, SDL_Surface *dest,int X, int Y, int W, int H)
+bool Camera::render(SDL_Renderer *renderer, SDL_Surface* destSurface,int X, int Y, int W, int H)
 {
-	if (src == NULL || dest == NULL)
+	if (renderer == NULL or destSurface == NULL)
 	{
-		fprintf(stderr,"Camera::render SDL_Surface is NULL pointer\n");
+		fprintf(stderr,"Camera::render Surface is NULL pointer\n");
 		return false;
 	}
 
@@ -36,17 +36,17 @@ bool Camera::render(SDL_Surface *src, SDL_Surface *dest,int X, int Y, int W, int
 	SDL_Rect *srcRectangle= new SDL_Rect();
 	
 
-	srcRectangle->x = X-W/2;
-	srcRectangle->y = Y-H/2;
+	srcRectangle->x = X;
+	srcRectangle->y = Y;
 	srcRectangle->w = W;
 	srcRectangle->h = H;
-	SDL_BlitSurface(
-					src,
-					srcRectangle,
-					dest,
-					destRectangle
-					);
-	SDL_FillRect(src, NULL, 0x000000);
+//	SDL_BlitSurface(
+//					srcSurface,
+//					srcRectangle,
+//					destSurface,
+//					destRectangle
+//					);
+
 	return true;
 }
 

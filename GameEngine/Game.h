@@ -10,11 +10,16 @@
 #define __GameEngine__Game__
 
 #include <memory.h>
+#include "SDLHeader.h"
+#include "GameLoader.h"
 #include <stdio.h>
 #include "Background.h"
 #include "Player.h"
 
 class Camera;
+
+
+#define DEFAULT_WINDOW_SIZE 628
 
 class Game
 {
@@ -24,16 +29,21 @@ protected:
 	bool					sideScrolling;
 	bool                    running;
 	int                     maxFPS;
+	GameLoader				*loader;
 	
 public:
-	int width;
-	int height;
-	std::unique_ptr<Player>      player;
-	std::unique_ptr<Background>  background;
-	SDL_Surface *mainSurface, *canvas;
+	SDL_Renderer				*renderer;
+	int							width, height;
+	int							X,Y;
+	std::unique_ptr<Player>     player;
+	std::unique_ptr<Background> background;
+	SDL_Window					*mainWindow;
+	SDL_Texture					*canvas;
 
 public:
-	Game();
+	Game(int width  = DEFAULT_WINDOW_SIZE,
+		 int height = DEFAULT_WINDOW_SIZE
+		);
 	
 	void setMaxFPS(int FPS);
 	
@@ -45,15 +55,25 @@ public:
 	
 	void addBackground(Background *bg);
 	
-	bool render();
+	void setRenderer(SDL_Renderer *renderer);
 	
-	bool keyHandler();
+	bool render();
 	
 	bool eventHandler();
 	
 	bool loop();
 	
 	void release();
+	
+	void loadParameterValues(string str);
+	
+private:
+	
+	void updateGameXYPos();
+	
+	void setEnvironmentValues(int *winWidth, int*winHeight,
+							  int*cameraX, int*cameraY
+							);
 
 };
 
