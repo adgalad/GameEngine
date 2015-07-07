@@ -11,7 +11,6 @@
 
 #include <memory.h>
 #include "SDLHeader.h"
-#include "GameLoader.h"
 #include <stdio.h>
 #include "Background.h"
 #include "Player.h"
@@ -29,7 +28,6 @@ protected:
 	bool					sideScrolling;
 	bool                    running;
 	int                     maxFPS;
-	GameLoader				*loader;
 	
 public:
 	SDL_Renderer				*renderer;
@@ -64,8 +62,6 @@ public:
 	bool loop();
 	
 	void release();
-	
-	void loadParameterValues(string str);
 	
 private:
 	

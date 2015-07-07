@@ -12,7 +12,9 @@
 #include <cstdio>
 #include <cstdlib>
 #include "SDLHeader.h"
-
+#include "Game.h"
+#include "pugiconfig.hpp"
+#include "pugixml.hpp"
 using namespace std;
 
 class GameLoader
@@ -20,7 +22,15 @@ class GameLoader
 public:
 	GameLoader();
 
-	bool loadParameters(string file);
+	static Game *loadXML(char *file);
+
+private:
+	
+	static bool loadXMLTexture(pugi::xml_node *node, SDL_Renderer *renderer);
+	
+	static bool loadXMLEntity(pugi::xml_node *node, Game *game, Entity *entity);
+	
+	static bool loadXMLBackground(pugi::xml_node *node, Game *game);
 	
 };
 

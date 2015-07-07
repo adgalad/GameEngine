@@ -44,7 +44,6 @@ bool TextEntity::setMessage(SDL_Renderer *renderer, const char* message, ...)
 	va_list ap;
 	va_start(ap, message);
 	vsprintf(buf + strlen(buf), message, ap);
-	printf("%d %s",this->font,buf);
 	SDL_Surface* textSurface = TTF_RenderText_Solid(this->font,
 													buf,
 													this->color

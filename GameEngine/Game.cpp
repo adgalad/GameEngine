@@ -118,7 +118,7 @@ void Game::addPlayer(Player *player)
 	}
 	else
 	{
-		fprintf(stderr, "WARNING Game::addPlayer(Player*) this->background is NULL pointer");
+		fprintf(stderr, "WARNING Game::addPlayer(Player*): this->background is NULL pointer");
 	}
 }
 void Game::addBackground(Background *bg)
@@ -195,13 +195,8 @@ void Game::release()
 	this->player.release();
 	this->background->release();
 	this->background.release();
+	_textures.release();
 }
-
-void Game::loadParameterValues(string str)
-{
-	this->loader->loadParameters(str);
-}
-
 
 void Game::updateGameXYPos()
 {
@@ -211,8 +206,8 @@ void Game::updateGameXYPos()
 	this->height = h;
 	if (this->player != NULL)
 	{
-		this->X = this->player->X - this->width/2;
-		this->Y = this->player->Y - this->height/2;
+		this->X = this->player->X - this->width/2  + _cameraX;
+		this->Y = this->player->Y - this->height/2 + _cameraY;
 	}
 	else
 	{

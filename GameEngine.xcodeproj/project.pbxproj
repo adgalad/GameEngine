@@ -12,6 +12,8 @@
 		076B89BF1AB2B13200E9FFAF /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076B89BD1AB2B13200E9FFAF /* Entity.cpp */; settings = {COMPILER_FLAGS = "-O3"; }; };
 		076B89C31AB2B60000E9FFAF /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076B89C11AB2B60000E9FFAF /* Player.cpp */; settings = {COMPILER_FLAGS = "-O3"; }; };
 		0771D4181AB36390000E625F /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0771D4161AB36390000E625F /* Camera.cpp */; settings = {COMPILER_FLAGS = "-O3"; }; };
+		07AE84701B4307FC00EFEFF4 /* pugixml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07AE846E1B4307FC00EFEFF4 /* pugixml.cpp */; };
+		07AE84751B43102A00EFEFF4 /* SDLHeader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07AE84741B43102A00EFEFF4 /* SDLHeader.cpp */; };
 		07DF7E2A1AAAC394002D62A3 /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07DF7E221AAAC394002D62A3 /* Object.cpp */; settings = {COMPILER_FLAGS = "-O3"; }; };
 		07DF7E2B1AAAC394002D62A3 /* ObjectAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07DF7E241AAAC394002D62A3 /* ObjectAction.cpp */; settings = {COMPILER_FLAGS = "-O3"; }; };
 		07EF34341AC4948C004A0AAC /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07EF34331AC4948C004A0AAC /* Cocoa.framework */; };
@@ -55,7 +57,16 @@
 		0771D4161AB36390000E625F /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		0771D4171AB36390000E625F /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
 		077AB34F1AC2071800670C1B /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = background.png; path = Resource/background.png; sourceTree = "<group>"; };
+		07AE846D1B4307FC00EFEFF4 /* pugiconfig.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pugiconfig.hpp; sourceTree = "<group>"; };
+		07AE846E1B4307FC00EFEFF4 /* pugixml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pugixml.cpp; sourceTree = "<group>"; };
+		07AE846F1B4307FC00EFEFF4 /* pugixml.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pugixml.hpp; sourceTree = "<group>"; };
+		07AE84741B43102A00EFEFF4 /* SDLHeader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SDLHeader.cpp; sourceTree = "<group>"; };
+		07AE84761B43A28F00EFEFF4 /* map.ge */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = map.ge; sourceTree = "<group>"; };
+		07C1172E1B448E48004C15D2 /* setup.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = setup.xml; sourceTree = "<group>"; };
 		07C241771AC14BDD00EBC206 /* cosa.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cosa.png; path = Resource/cosa.png; sourceTree = "<group>"; };
+		07C7BAF41B4724250075A4EF /* sf2-bg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "sf2-bg.jpg"; path = "Resource/sf2-bg.jpg"; sourceTree = "<group>"; };
+		07C7BAF51B4734680075A4EF /* sf2-ground.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "sf2-ground.jpg"; path = "Resource/sf2-ground.jpg"; sourceTree = "<group>"; };
+		07C7BAF61B473BCE0075A4EF /* ken.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ken.png; path = Resource/ken.png; sourceTree = "<group>"; };
 		07DD46431AB7981C00E02362 /* sprite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = sprite.png; path = Resource/sprite.png; sourceTree = "<group>"; };
 		07DD46441AB7982B00E02362 /* yoshi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = yoshi.png; path = Resource/yoshi.png; sourceTree = "<group>"; };
 		07DF7E151AAAC366002D62A3 /* GameEngine.app */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GameEngine.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -64,7 +75,7 @@
 		07DF7E241AAAC394002D62A3 /* ObjectAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ObjectAction.cpp; sourceTree = "<group>"; };
 		07DF7E251AAAC394002D62A3 /* ObjectAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectAction.h; sourceTree = "<group>"; };
 		07DF7E261AAAC394002D62A3 /* SDLHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLHeader.h; sourceTree = "<group>"; };
-		07E652671AC8EDB100963D5D /* Things for the future */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Things for the future"; sourceTree = "<group>"; };
+		07E652671AC8EDB100963D5D /* surface.ge */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = surface.ge; sourceTree = "<group>"; };
 		07EF34331AC4948C004A0AAC /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		07EF34351AC49495004A0AAC /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		07EF34371AC494B1004A0AAC /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = ../../../../../../../../Library/Frameworks/SDL2_image.framework; sourceTree = "<group>"; };
@@ -100,9 +111,12 @@
 			isa = PBXGroup;
 			children = (
 				07DD46431AB7981C00E02362 /* sprite.png */,
+				07C7BAF41B4724250075A4EF /* sf2-bg.jpg */,
+				07C7BAF51B4734680075A4EF /* sf2-ground.jpg */,
 				076B89C01AB2B58C00E9FFAF /* coso.png */,
 				071A4EF41AC3DA750014AE6D /* Tree.png */,
 				071A4EF21AC3D7190014AE6D /* ground.jpg */,
+				07C7BAF61B473BCE0075A4EF /* ken.png */,
 				071A4EF31AC3D7190014AE6D /* wall.jpg */,
 				07DD46441AB7982B00E02362 /* yoshi.png */,
 				077AB34F1AC2071800670C1B /* background.png */,
@@ -113,10 +127,23 @@
 			name = Resource;
 			sourceTree = "<group>";
 		};
+		07AE846C1B4307E800EFEFF4 /* XML */ = {
+			isa = PBXGroup;
+			children = (
+				07AE846D1B4307FC00EFEFF4 /* pugiconfig.hpp */,
+				07AE846E1B4307FC00EFEFF4 /* pugixml.cpp */,
+				07AE846F1B4307FC00EFEFF4 /* pugixml.hpp */,
+			);
+			name = XML;
+			sourceTree = "<group>";
+		};
 		07DF7E0C1AAAC366002D62A3 = {
 			isa = PBXGroup;
 			children = (
-				07E652671AC8EDB100963D5D /* Things for the future */,
+				07AE846C1B4307E800EFEFF4 /* XML */,
+				07E652671AC8EDB100963D5D /* surface.ge */,
+				07AE84761B43A28F00EFEFF4 /* map.ge */,
+				07C1172E1B448E48004C15D2 /* setup.xml */,
 				07F8A5571AC9775200F25BC6 /* setup.ge */,
 				07DF7E3A1AAAC40E002D62A3 /* Frameworks */,
 				07DF7E3D1AAAC455002D62A3 /* SDL */,
@@ -194,6 +221,7 @@
 			isa = PBXGroup;
 			children = (
 				07DF7E261AAAC394002D62A3 /* SDLHeader.h */,
+				07AE84741B43102A00EFEFF4 /* SDLHeader.cpp */,
 			);
 			name = SDL;
 			path = GameEngine;
@@ -255,6 +283,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07AE84751B43102A00EFEFF4 /* SDLHeader.cpp in Sources */,
 				076B89BF1AB2B13200E9FFAF /* Entity.cpp in Sources */,
 				0771D4181AB36390000E625F /* Camera.cpp in Sources */,
 				076B89C31AB2B60000E9FFAF /* Player.cpp in Sources */,
@@ -264,6 +293,7 @@
 				07DF7E2A1AAAC394002D62A3 /* Object.cpp in Sources */,
 				0719E8001B42414F003C4308 /* TextEntity.cpp in Sources */,
 				07F9E5D21AC386E4004E03FD /* main.cpp in Sources */,
+				07AE84701B4307FC00EFEFF4 /* pugixml.cpp in Sources */,
 				0741AD061AB123EF009DCA20 /* Game.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

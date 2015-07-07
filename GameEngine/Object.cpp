@@ -21,7 +21,8 @@ Object::Object()
 	this->isStatic			= false;
 	this->animated          = false;
 	this->verticalAnimation = true;
-		printf("ID %d \n",id);
+	this->spriteMap			= NULL;
+
 }
 
 Object::Object(SDL_Surface *surface, SDL_Renderer *renderer)
@@ -37,12 +38,12 @@ Object::Object(SDL_Surface *surface, SDL_Renderer *renderer)
 		this->isStatic			= false;
 		this->animated			= false;
 		this->verticalAnimation = true;
+		this->spriteMap			= NULL;
 	}
 	else
 	{
 		fprintf(stderr, "Object::Object(SDL_Texture *): Surface assigned is NULL pointer\n");
 	}
-	printf("%d \n",id);
 }
 
 void Object::setStatic(bool value)
@@ -80,14 +81,25 @@ void Object::setAnimateValues(int columns, int rows)
 {
 	if (this->texture != NULL)
 	{
-		this->columns		= columns;
-		this->rows			= rows;
-		this->width			= this->width/columns;
-		this->height		= this->height/rows;
-		this->currentFrameX = 0;
-		this->currentFrameY = 0;
-		this->isSprite		= true;
-
+		if(columns > 0 and rows > 0)
+		{
+			this->columns		= columns;
+			this->rows			= rows;
+			this->width			= this->width/columns;
+			this->height		= this->height/rows;
+			this->currentFrameX = 0;
+			this->currentFrameY = 0;
+			this->isSprite		= true;
+			this->spriteMap		= NULL;
+		}
+		else
+		{
+			fprintf(stderr, "WARNING Object::setAnimateValues(): Division by zero\n");
+		}
+	}
+	else
+	{
+		fprintf(stderr, "WARNING Object::setAnimateValues(): Texture is null pointer\n");
 	}
 }
 
@@ -124,6 +136,44 @@ bool Object::loadImage(string file, SDL_Renderer *renderer)
 	this->height = surface->h;
 	this->texture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
+	return true;
+}
+bool Object::loadSurface(SDL_Surface *surface, SDL_Renderer *renderer)
+{
+
+	if (surface == NULL)
+	{
+		fprintf(stderr, "Object::loadSurface(SDL_Surface*, SDL_Renderer*): Surface is NULL pointer\n\t%s\n",SDL_GetError());
+		return false;
+	}
+	if (renderer == NULL)
+	{
+		fprintf(stderr, "Object::loadSurface(SDL_Surface*, SDL_Renderer*): Renderer is NULL pointer\n\t%s\n",SDL_GetError());
+		return false;
+	}
+	this->texture = SDL_CreateTextureFromSurface(renderer, surface);
+	if (this->texture != NULL)
+	{
+		SDL_QueryTexture(this->texture, NULL, NULL, &this->width, &this->height);
+	}
+	else
+	{
+		fprintf(stderr, "Object::loadSurface(SDL_Surface*, SDL_Renderer*): Texture is NULL pointer\n\t%s\n",SDL_GetError());
+		return false;
+	}
+	return true;
+}
+
+bool Object::loadTexture(SDL_Texture *texture)
+{
+	if (texture == NULL)
+	{
+		fprintf(stderr, "Object::loadSurface(SDL_Surface*, SDL_Renderer*): Texture assigned is NULL pointer\n\t%s\n",SDL_GetError());
+		return false;
+	}
+	this->texture = texture;
+	SDL_QueryTexture(this->texture, NULL, NULL, &this->width, &this->height);
+	
 	return true;
 }
 
@@ -183,7 +233,6 @@ bool Object::renderObject(SDL_Renderer *renderer,
 				   &srcRectangle,
 				   &destRectangle
 				   );
-	
 	return true;
 }
 

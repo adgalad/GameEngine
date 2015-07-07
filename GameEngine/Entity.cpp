@@ -19,11 +19,13 @@ Entity::Entity()
 	this->movable			= false;
 	this->stoped			= true;
 	this->iscollision		= true;
+	this->standingAnimated  = false;
+	this->spriteMap			= NULL;
 	this->direction			= 1;
 	this->velocityX			= 0.0;
 	this->velocityY			= 0.0;
-	this->jumpVelocity		= jumpAcceleration;
-	this->gravity			= gravtiyAcceleration;
+	this->jumpVelocity		= _jumpAcceleration;
+	this->gravity			= _gravtiyAcceleration;
 }
 
 
@@ -54,6 +56,12 @@ void Entity::setBackground(Background *bg)
 {
 	this->background = std::unique_ptr<Background>(bg);
 }
+
+void Entity::setStadingAnimated(bool value)
+{
+	this->standingAnimated = value;
+}
+
 void Entity::moveTo(int x, int y)
 {
 	this->X = x;
@@ -98,10 +106,10 @@ bool Entity::collision()
 				this->Y = topB - this->height;
 		
 			}
-			if(     ( bottomA > topB  and topA  < bottomB and
-					  rightA  > leftB and leftA < rightB)
-				 or ( leftA > leftB and rightA < rightB and
-					  bottomA < bottomB and topA > topB)
+			if(     ( bottomA > topB    and topA   < bottomB and
+					  rightA  > leftB   and leftA  < rightB)
+				 or ( leftA   > leftB   and rightA < rightB  and
+					  bottomA < bottomB and topA   > topB)
 			   )
 			{
 				collision = true;
@@ -322,11 +330,138 @@ void Entity::movement()
 	}
 }
 
+bool Entity::renderObject(SDL_Renderer *renderer,
+						  int X1, int Y1,
+						  int X2, int Y2,
+						  int W,  int H
+						  )
+{
+	if(renderer == NULL or this->texture == NULL) {
+		fprintf(stderr, "Error Object::renderObject() Couldn't render the object \n");
+		return false;
+	}
+	
+	SDL_Rect destRectangle;
+	destRectangle.x = X1;
+	destRectangle.y = Y1;
+	destRectangle.w = W;
+	destRectangle.h = H;
+	
+	SDL_Rect srcRectangle;
+	srcRectangle.x = X2*W;
+	srcRectangle.y = Y2*H;
+	srcRectangle.w = W;
+	srcRectangle.h = H;
+	SDL_RendererFlip cond;
+	if (this->direction == 0) {
+		SDL_RenderCopyEx(renderer,
+						 this->texture,
+						 &srcRectangle,
+						 &destRectangle,
+						 0, NULL, SDL_FLIP_NONE);
+	}
+	else
+	{
+		SDL_RenderCopyEx(renderer,
+						 this->texture,
+						 &srcRectangle,
+						 &destRectangle,
+						 0, NULL, SDL_FLIP_HORIZONTAL);
+	}
+
+
+
+	return true;
+}
+
 bool Entity::render(SDL_Renderer *renderer)
 {
 	this->movement();
-	return Object::render(renderer);
-	
+	if(this->spriteMap == NULL)
+	{
+		return Object::render(renderer);
+	}
+	else
+	{
+		if (this->isSprite)
+		{
+			if (this->animated)
+			{
+				if (!this->verticalAnimation)
+				{
+					if (this->spriteMap[this->currentFrameY]-1 > this->currentFrameX)
+					{
+						this->currentFrameX += 1;
+					}
+					else
+					{
+						this->currentFrameX = 0;
+					}
+				}
+				else
+				{
+					if (this->spriteMap[this->currentFrameX]-1 > this->currentFrameY)
+					{
+						this->currentFrameY += 1;
+					}
+					else
+					{
+						this->currentFrameY = 0;
+					}
+				}
+			}
+			else
+			{
+				if (!this->verticalAnimation and this->currentFrameX != 0)
+				{
+					if (this->spriteMap[this->currentFrameY]-1 > this->currentFrameX)
+					{
+						this->currentFrameX += 1;
+					}
+					else
+					{
+						this->currentFrameX = 0;
+					}
+				}
+				else if (this->verticalAnimation and this->currentFrameY != 0)
+				{
+					if (this->spriteMap[this->currentFrameX]-1 > this->currentFrameY)
+					{
+						this->currentFrameY += 1;
+					}
+					else
+					{
+						this->currentFrameY = 0;
+					}
+				}
+			}
+			if (this->cameraX != NULL)
+			{
+				return renderObject( renderer,
+									this->X - *this->cameraX,
+									this->Y - *this->cameraY,
+									this->currentFrameX,
+									this->currentFrameY,
+									this->width,
+									this->height
+									);
+			}
+			else
+			{
+				return renderObject( renderer,
+									this->X,
+									this->Y,
+									this->currentFrameX,
+									this->currentFrameY,
+									this->width,
+									this->height
+									);
+			}
+			
+			
+		}
+	}
+	return true;
 }
 
 void Entity::release()

@@ -1,4 +1,6 @@
-maxVelocityX = 10;
-maxVelocityY = 10;
-jumpAceleration = 40;
-gravity = 9.8
+maxWalkVelocityX = 20;
+maxWalkVelocityY = 10;
+jumpAceleration  = -50;
+gravityAceleration = 9.8;
+
+surfaces = 

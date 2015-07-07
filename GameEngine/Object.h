@@ -29,6 +29,7 @@ class Object
 public:
 	vector<unique_ptr<ObjectAction>> action;
 	SDL_TimerID timer;
+	int         *spriteMap;
 	int         columns, rows;
 	int         currentFrameX, currentFrameY;
 	bool        animated;
@@ -95,6 +96,10 @@ public:
 	virtual bool render(SDL_Renderer *renderer);
 	
 	bool loadImage(string file, SDL_Renderer *renderer);
+	
+	bool loadSurface(SDL_Surface *surface, SDL_Renderer *renderer);
+	
+	bool loadTexture(SDL_Texture *texture);
 	
 	bool makeTransparent(int R, int G, int B);
 

@@ -25,6 +25,7 @@ public:
 	bool movable;
 	bool stoped;
 	bool iscollision;
+	bool standingAnimated;
 
 	int    direction;
 	float  velocityX;
@@ -35,6 +36,7 @@ public:
 public:
 
 protected:
+	
 	bool collision();
 
 public:
@@ -44,6 +46,8 @@ public:
 	
 	void setBackground(Background *bg);
 	
+	inline void setStadingAnimated(bool value);
+	
 	void moveTo(int x, int y);
 	
 	void movement();
@@ -51,6 +55,12 @@ public:
 	virtual bool render(SDL_Renderer *renderer);
 	
 	void release();
+	
+	bool renderObject(SDL_Renderer *renderer,
+					  int X1, int Y1,
+					  int X2, int Y2,
+					  int W,  int H
+					  );
 	
 	virtual void eventHandler(SDL_Event *event,Uint8 *keyStates);
 	
