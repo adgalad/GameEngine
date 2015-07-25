@@ -67,8 +67,8 @@ private:
 	
 	void updateGameXYPos();
 	
-	void setEnvironmentValues(int *winWidth, int*winHeight,
-							  int*cameraX, int*cameraY
+	void setEnvironmentValues(int *winWidth, int *winHeight,
+							  int *cameraX,  int *cameraY
 							);
 
 };

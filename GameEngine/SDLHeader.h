@@ -12,6 +12,7 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include <vector>
+#include <list>
 #include <SDL2_image/SDL_image.h>
 #include <SDL2_mixer/SDL_mixer.h>
 #include <SDL2_ttf/SDL_ttf.h>
@@ -24,8 +25,15 @@ class Instance;
 class Object;
 class Background;
 class Entity;
+class TemporalEntity;
+class TextEntity;
 class Player;
 class Camera;
+
+#define RIGHT_DIR	0
+#define LEFT_DIR	1
+#define UP_DIR		2
+#define DOWN_DIR	3
 
 class TextureInfo
 {
@@ -58,17 +66,22 @@ public:
 	bool addTexture(TextureInfo *ti);
 	
 	TextureInfo* getTextureById(int _id);
+	
+	TextureInfo* getTextureByName(const char *name);
 };
 
 
-extern TextureList	_textures;
-extern int			_cameraX;
-extern int			_cameraY;
-extern float		_jumpAcceleration;
-extern float		_maxWalkVelocityX;
-extern float		_maxWalkVelocityY;
-extern float		_maxSprintVelocityX;
-extern float		_maxSprintVelocityY;
-extern float		_gravtiyAcceleration;
-
+class GameParameter
+{
+public:
+	static TextureList	_textures;
+	static int			_cameraX;
+	static int			_cameraY;
+	static float		_jumpAcceleration;
+	static float		_maxWalkVelocityX;
+	static float		_maxWalkVelocityY;
+	static float		_maxSprintVelocityX;
+	static float		_maxSprintVelocityY;
+	static float		_gravtiyAcceleration;
+};
 #endif

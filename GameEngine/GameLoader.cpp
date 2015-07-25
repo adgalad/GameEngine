@@ -9,15 +9,6 @@
 #include "GameLoader.h"
 
 
-TextureList _textures;
-int	  _cameraX			   = 0;
-int   _cameraY			   = 0;
-float _jumpAcceleration	   = -50.0;
-float _maxWalkVelocityX	   = 10.0;
-float _maxWalkVelocityY    = 40.0;
-float _maxSprintVelocityX  = 32.0;
-float _maxSprintVelocityY  = 32.0;
-float _gravtiyAcceleration = 9.8;
 
 
 Game *GameLoader::loadXML(char *file)
@@ -38,11 +29,11 @@ Game *GameLoader::loadXML(char *file)
 	}
 	if (!gameNode.attribute("cameraX").empty())
 	{
-		_cameraX = gameNode.attribute("cameraX").as_int();
+		GameParameter::_cameraX = gameNode.attribute("cameraX").as_int();
 	}
 	if (!gameNode.attribute("cameraY").empty())
 	{
-		_cameraY = gameNode.attribute("cameraY").as_int();
+		GameParameter::_cameraY = gameNode.attribute("cameraY").as_int();
 	}
 	if (!gameNode.attribute("fps").empty())
 	{
@@ -50,22 +41,22 @@ Game *GameLoader::loadXML(char *file)
 	}
 	if (!gameNode.attribute("jumpAcceleration").empty())
 	{
-		_jumpAcceleration = gameNode.attribute("jumpAcceleration").as_float();
+		GameParameter::_jumpAcceleration = gameNode.attribute("jumpAcceleration").as_float();
 	}
 	if (!gameNode.attribute("maxSprintVelocityX" ).empty()) {
-		_maxSprintVelocityX  = gameNode.attribute("maxSprintVelocityX").as_float();
+		GameParameter::_maxSprintVelocityX  = gameNode.attribute("maxSprintVelocityX").as_float();
 	}
 	if (!gameNode.attribute("maxSprintVelocityY" ).empty()) {
-		_maxSprintVelocityY = gameNode.attribute("maxSprintVelocityY").as_float();
+		GameParameter::_maxSprintVelocityY = gameNode.attribute("maxSprintVelocityY").as_float();
 	}
 	if (!gameNode.attribute("maxWalkVelocityX"   ).empty()) {
-		_maxWalkVelocityX = gameNode.attribute("maxWalkVelocityX").as_float();
+		GameParameter::_maxWalkVelocityX = gameNode.attribute("maxWalkVelocityX").as_float();
 	}
 	if (!gameNode.attribute("maxWalkVelocityY").empty()) {
-		_maxWalkVelocityY = gameNode.attribute("maxWalkVelocityY").as_float();
+		GameParameter::_maxWalkVelocityY = gameNode.attribute("maxWalkVelocityY").as_float();
 	}
 	if (!gameNode.attribute("gravtiyAcceleration").empty()) {
-		_gravtiyAcceleration = gameNode.attribute("gravtiyAcceleration").as_float();
+		GameParameter::_gravtiyAcceleration = gameNode.attribute("gravtiyAcceleration").as_float();
 	}
 	for (pugi::xml_node node = gameNode.first_child(); node; node = node.next_sibling()) {
 		if (!strcmp(node.name(),"surface"))
@@ -112,7 +103,7 @@ bool GameLoader::loadXMLTexture(pugi::xml_node *node, SDL_Renderer *renderer)
 				{
 					aux->name = i.attribute("name").as_string();
 				}
-				_textures.addTexture(aux);
+				GameParameter::_textures.addTexture(aux);
 			}
 			else
 			{
@@ -131,7 +122,7 @@ bool GameLoader::loadXMLBackground(pugi::xml_node *node, Game *game)
 	
 	if(!node->attribute("id").empty())
 	{
-		bg->loadTexture(_textures.getTextureById(node->attribute("id").as_int())->SDLtexture);
+		bg->loadTexture(GameParameter::_textures.getTextureById(node->attribute("id").as_int())->SDLtexture);
 	}
 	if(!node->attribute("static").empty())
 	{
@@ -150,7 +141,7 @@ bool GameLoader::loadXMLBackground(pugi::xml_node *node, Game *game)
 		if (!strcmp(i.name(),"player"))
 		{
 			Player *player = new Player;
-			GameLoader::loadXMLEntity(&i, game, player);
+			GameLoader::loadXMLPlayer(&i, game, player);
 			game->addPlayer(player);
 		}
 		else if (!strcmp(i.name(),"entity"))
@@ -163,6 +154,221 @@ bool GameLoader::loadXMLBackground(pugi::xml_node *node, Game *game)
 	return true;
 }
 
+bool GameLoader::loadXMLPlayer(pugi::xml_node *node, Game *game, Player *player)
+{
+	int c = 1, r = 1;
+		// Load Surface
+	if(!node->attribute("id").empty())
+	{
+		player->loadTexture(GameParameter::_textures.getTextureById(node->attribute("id").as_int())->SDLtexture);
+	}
+	
+	if(!node->attribute("X").empty())
+	{
+		player->X = node->attribute("X").as_int();
+	}
+	
+	if(!node->attribute("Y").empty())
+	{
+		player->Y = node->attribute("Y").as_int();
+	}
+	
+	if(!node->attribute("velocityX").empty())
+	{
+		player->velocityX = node->attribute("velocityX").as_int();
+	}
+	
+	if(!node->attribute("velocityY").empty())
+	{
+		player->velocityY = node->attribute("velocityY").as_int();
+	}
+	
+	if(!node->attribute("animated").empty())
+	{
+		player->animated = node->attribute("animated").as_bool();
+	}
+	
+	if(!node->attribute("animatedRow").empty())
+	{
+		r = node->attribute("animatedRow").as_int();
+	}
+	
+	if(!node->attribute("animatedColumn").empty())
+	{
+		c = node->attribute("animatedColumn").as_int();
+	}
+	
+	if(!node->attribute("standingAnimated").empty())
+	{
+		player->standingAnimated = node->attribute("standingAnimated").as_bool();
+	}
+	
+	if(!node->attribute("verticalAnimation").empty())
+	{
+		player->verticalAnimation = node->attribute("verticalAnimation").as_bool();
+	}
+	
+	if(!node->attribute("iscollision").empty())
+	{
+		player->iscollision = node->attribute("iscollision").as_bool();
+	}
+	
+	player->setAnimateValues(c, r);
+	pugi::xml_node nodeMap;
+	if ((nodeMap = node->child("spriteMap"))!=NULL)
+	{
+		int j = 0;
+		if(!player->verticalAnimation)
+		{
+			player->spriteMap = (int*) malloc(sizeof(int)*player->rows);
+			
+			for(pugi::xml_node i = nodeMap.first_child();
+				i && j<player->rows;
+				i = i.next_sibling()
+				)
+			{
+				if (!strcmp(i.name(),"c"))
+				{
+					player->spriteMap[j++] = i.attribute("value").as_int();
+				}
+			}
+		}
+		else
+		{
+			player->spriteMap = (int*) malloc(sizeof(int)*player->columns);
+			for(pugi::xml_node i = nodeMap.first_child();
+				i && j < player->columns;
+				i = i.next_sibling()
+				)
+			{
+				if (!strcmp(i.name(),"c"))
+				{
+					player->spriteMap[j++] = i.attribute("value").as_int();
+				}
+			}
+		}
+		pugi::xml_node nodeControl;
+		if ((nodeControl = nodeMap.child("control"))!=NULL)
+		{
+			const int n = 5;
+			char words[n][10] = { "moveDown",
+								  "moveUp",
+								  "moveLeft",
+								  "moveRight",
+								  "standing"
+								};
+			int *pointerKey[n] = { &player->keyDown,
+								   &player->keyUp,
+				                   &player->keyLeft,
+								   &player->keyRight,
+								   &player->keyStanding
+								};
+			int *pointerPos[n] = {  &player->posDown,
+									&player->posUp,
+									&player->posLeft,
+									&player->posRight,
+									&player->posStanding
+								};
+			bool cond = true;
+			for(pugi::xml_node i = nodeControl.first_child();
+				i;
+				i = i.next_sibling()
+				)
+			{
+				for (int j = 0 ; j < n ; j++)
+				{
+					if (!strcmp(i.name(),words[j]) and
+						!i.attribute("position").empty())
+					{
+						int pos = i.attribute("position").as_int();
+						if(!i.attribute("key").empty())
+						{
+							const char *key = i.attribute("key").as_string();
+
+							if (!strcmp(key,"left"))
+							{
+								printf("LEFT %d\n",pos);
+								*pointerKey[j] = SDLK_LEFT;
+							}
+							else if(!strcmp(key,"down"))
+							{
+								printf("DOWN %d\n",pos);
+								*pointerKey[j] = SDLK_DOWN;
+							}
+							else if(!strcmp(key,"right"))
+							{
+								printf("RIGHT %d\n",pos);
+								*pointerKey[j] = SDLK_RIGHT;
+							}
+							else if(!strcmp(key,"up"))
+							{
+								printf("UP %d\n",pos);
+								*pointerKey[j] = SDLK_UP;
+							}
+							else if (strlen(key) == 1)
+							{
+								*pointerKey[j] = key[0];
+							}
+							else
+							{
+								fprintf(stderr,"WARNING GameLoader::loadXMLPlayer(pugi::xml_node*, Game*, Player*): Unable to load key '%s' on %s",key,words[j]);
+								cond = false;
+								break;
+							}
+						}
+						*pointerPos[j] = pos;
+						cond = false;
+						break;
+					}
+				}
+				if (!cond)
+				{
+					cond = true;
+					continue;
+				}
+				if (!strcmp(i.name(),"special"))
+				{
+					if(i.attribute("key"     ).empty() or
+					   i.attribute("position").empty())
+					{
+						fprintf(stderr,"WARNING GameLoader::loadXMLPlayer(pugi::xml_node*, Game*, Player*):\nUnable to find key or position value when trying to add special action\n");
+						continue;
+					}
+					
+					const char *key = i.attribute("key").as_string();
+					int         pos = i.attribute("position").as_int();
+					if (!strcmp(key,"left"))
+					{
+						player->addAction(pos, SDLK_LEFT);
+					}
+					else if(!strcmp(key,"down"))
+					{
+						player->addAction(pos, SDLK_DOWN);
+					}
+					else if(!strcmp(key,"right"))
+					{
+						player->addAction(pos, SDLK_RIGHT);
+					}
+					else if(!strcmp(key,"up"))
+					{
+						player->addAction(pos, SDLK_UP);
+					}
+					else if (strlen(key) == 1)
+					{
+						player->addAction(pos, key[0]);
+					}
+					else
+					{
+						fprintf(stderr,"WARNING GameLoader::loadXMLPlayer(pugi::xml_node*, Game*, Player*): Unable to load key '%s' on special action",key);
+						cond = false;
+						break;
+					}
+				}
+			}
+		}
+	}
+	return true;
+}
 
 bool GameLoader::loadXMLEntity(pugi::xml_node *node, Game *game, Entity *entity)
 {
@@ -170,7 +376,7 @@ bool GameLoader::loadXMLEntity(pugi::xml_node *node, Game *game, Entity *entity)
 	// Load Surface
 	if(!node->attribute("id").empty())
 	{
-		entity->loadTexture(_textures.getTextureById(node->attribute("id").as_int())->SDLtexture);
+		entity->loadTexture(GameParameter::_textures.getTextureById(node->attribute("id").as_int())->SDLtexture);
 	}
 
 	if(!node->attribute("X").empty())
@@ -192,30 +398,37 @@ bool GameLoader::loadXMLEntity(pugi::xml_node *node, Game *game, Entity *entity)
 	{
 		entity->velocityY = node->attribute("velocityY").as_int();
 	}
+	
 	if(!node->attribute("animated").empty())
 	{
 		entity->animated = node->attribute("animated").as_bool();
 	}
+	
 	if(!node->attribute("animatedRow").empty())
 	{
 		r = node->attribute("animatedRow").as_int();
 	}
+	
 	if(!node->attribute("animatedColumn").empty())
 	{
 		c = node->attribute("animatedColumn").as_int();
 	}
+	
 	if(!node->attribute("standingAnimated").empty())
 	{
 		entity->standingAnimated = node->attribute("standingAnimated").as_bool();
 	}
+	
 	if(!node->attribute("verticalAnimation").empty())
 	{
 		entity->verticalAnimation = node->attribute("verticalAnimation").as_bool();
 	}
+	
 	if(!node->attribute("iscollision").empty())
 	{
 		entity->iscollision = node->attribute("iscollision").as_bool();
 	}
+	
 	entity->setAnimateValues(c, r);
 	pugi::xml_node nodeMap;
 	if ((nodeMap = node->child("spriteMap"))!=NULL) {
@@ -223,7 +436,6 @@ bool GameLoader::loadXMLEntity(pugi::xml_node *node, Game *game, Entity *entity)
 		if(!entity->verticalAnimation)
 		{
 			entity->spriteMap = (int*) malloc(sizeof(int)*entity->rows);
-
 			for(pugi::xml_node i = nodeMap.first_child();
 				i && j<entity->rows;
 				i = i.next_sibling()

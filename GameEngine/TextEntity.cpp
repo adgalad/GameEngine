@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 ARSC. All rights reserved.
 //
 
+#include "SDLHeader.h"
 #include "TextEntity.h"
 
 TextEntity::TextEntity()
@@ -20,6 +21,7 @@ bool TextEntity::setColor(Uint8 R, Uint8 B , Uint8 G, Uint8 A)
 	this->color.b = B;
 	this->color.b = G;
 	this->color.a = A;
+
 	return true;
 }
 

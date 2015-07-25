@@ -7,24 +7,41 @@
 //
 
 #include "Background.h"
-#include "Entity.h"
+
 Background::Background()
 {
-	this->X = 0;
-	this->Y = 0;
+
 }
 
 void Background::addEntity(Entity *entity)
 {
-	entity->setBackground(this);
-	if(entity->background == NULL)
+	
+	if(entity == NULL)
 	{
+		fprintf(stderr,"ERROR Background::addEntity(TemporalEntity *) Entity is NULL pointer\n\t%s\n",SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
+	entity->setBackground(this);
 	this->entities.push_back(unique_ptr<Entity>(entity));
 }
 
+void Background::addTemporalEntity(Entity *entity)
+{
+	if(entity == NULL)
+	{
+		fprintf(stderr,"ERROR Background::addTemporalEntity(TemporalEntity *) Entity is NULL pointer\n\t%s\n",SDL_GetError());
+		exit(EXIT_FAILURE);
+	}
+	entity->setBackground(this);
+	this->tempEntities.pushFront(entity);
+}
 
+void Background::removeTemporalEntity(Entity *entity)
+{
+	printf("entro\n");
+	this->tempEntities.remove(entity);
+	printf("salio\n");
+}
 
 void Background::setBackgroundEnviromentValues( int *winWidth, int *winHeight,
 											    int *cameraX,  int *cameraY
@@ -41,16 +58,27 @@ void Background::setBackgroundEnviromentValues( int *winWidth, int *winHeight,
 	}
 }
 
+void Background::loop()
+{
+	for (int i = 0; i < entities.size(); i++)
+	{
+		entities[i]->movement();
+		entities[i]->collision();
+	}
+	this->tempEntities.loop();
+}
+
 bool Background::render(SDL_Renderer *renderer)
 {
 	Object::render(renderer);
 	bool returnValue = true;
-
+	
 	for (int i = 0; i < entities.size(); i++)
 	{
 		returnValue &= entities[i]->render(renderer);
 	}
 
+	returnValue &= this->tempEntities.render(renderer);
 	return returnValue;
 }
 

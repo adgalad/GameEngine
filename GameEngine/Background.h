@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include "SDLHeader.h"
-#include "Entity.h"
+#include "EntityList.h"
 
 class Entity;
 
@@ -22,7 +22,7 @@ protected:
 
 public:
 	vector<unique_ptr<Entity>> entities;
-
+	EntityList tempEntities;
 protected:
 	
 public:
@@ -32,11 +32,17 @@ public:
 	
 	void addEntity(Entity *entity);
 
+	void addTemporalEntity(Entity *entity);
+	
+	void removeTemporalEntity(Entity *entity);
+	
 	void addBackgroundObject(Background *object);
 	
 	void setBackgroundEnviromentValues( int *winWidth, int *winHeight,
 										int *cameraX,  int *cameraY
 									);
+	
+	void loop();
 	
 	bool render(SDL_Renderer *renderer);
 	

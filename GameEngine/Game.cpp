@@ -36,7 +36,10 @@ bool Game::init()
 		fprintf(stderr, "ERROR Game::init() Couldn't initialize SDL\n\t%s\n",SDL_GetError());
 		return false;
 	}
-
+	SDL_DisplayMode dm;
+	SDL_GetCurrentDisplayMode(0, &dm);
+	this->width  = dm.w/1.5;
+	this->height = dm.h/1.5;
 	if (NULL==( mainWindow = SDL_CreateWindow("Game Engine - SDL",
 											   SDL_WINDOWPOS_UNDEFINED,
 											   SDL_WINDOWPOS_UNDEFINED,
@@ -66,6 +69,7 @@ bool Game::init()
 	this->camera = new Camera();
 
 	/*Enable Music mixer */
+//	Mix_Music *moveSound;
 //	Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
 //	moveSound = Mix_LoadMUS("/Users/carlosspaggiari/Desktop/C-C++/PROYECTOS/Chess/Chess/Resource/moveSound.wav");
 //	if (moveSound == NULL)
@@ -73,8 +77,10 @@ bool Game::init()
 //		printf("Couldn't load sound\n");
 //		return false;
 //	}
+	
+	
 	if (TTF_Init() != 0){
-		printf("ERROR Game::init() Couldn't load TTF\n\t%s\n",SDL_GetError());
+		fprintf(stderr,"ERROR Game::init() Couldn't load TTF\n\t%s\n",SDL_GetError());
 		return false;
 	}
 	
@@ -161,6 +167,11 @@ bool Game::eventHandler()
 				{
 					this->running = false;
 				}
+				if (keyStates[SDL_GetScancodeFromKey(SDLK_m)])
+				{
+					this->player->X = 500;
+					this->player->Y = 300;
+				}
 				switch (this->event->key.keysym.sym) {
 					case SDLK_n:
 						this->running = false;
@@ -177,13 +188,16 @@ bool Game::eventHandler()
 	if(this->player != NULL)
 	{
 		//		printf("(%d %d)   (%d %d)\n",player->X, player->Y, this->player->X - this->width/2, this->player->Y - this->height/2);
-		this->player->eventHandler(event, keyStates);
+		this->player->eventHandler(event, keyStates,this->renderer);
 	}
 	return true;
 }
 bool Game::loop()
 {
-	return true;
+	this->background->loop();
+	this->player->movement();
+	this->player->collision();
+	return false;
 }
 
 void Game::release()
@@ -195,7 +209,7 @@ void Game::release()
 	this->player.release();
 	this->background->release();
 	this->background.release();
-	_textures.release();
+	GameParameter::_textures.release();
 }
 
 void Game::updateGameXYPos()
@@ -206,8 +220,8 @@ void Game::updateGameXYPos()
 	this->height = h;
 	if (this->player != NULL)
 	{
-		this->X = this->player->X - this->width/2  + _cameraX;
-		this->Y = this->player->Y - this->height/2 + _cameraY;
+		this->X = this->player->X - this->width/2  + GameParameter::_cameraX;
+		this->Y = this->player->Y - this->height/2 + GameParameter::_cameraY;
 	}
 	else
 	{

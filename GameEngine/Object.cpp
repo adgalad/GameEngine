@@ -114,10 +114,7 @@ int Object::getCurentFrameY()
 	return this->currentFrameY;
 }
 
-void Object::addAction(ObjectAction *action)
-{
-	this->action.push_back(unique_ptr<ObjectAction>(action));
-}
+
 
 
 /**
@@ -177,7 +174,7 @@ bool Object::loadTexture(SDL_Texture *texture)
 	return true;
 }
 
-/**
+/*
  * Render all the SDL surface of the object into the
  * (X,Y) position in the destiny surface
  */
@@ -242,6 +239,7 @@ bool Object::renderObject(SDL_Renderer *renderer,
  */
 bool Object::render(SDL_Renderer* renderer)
 {
+	
 	if (this->isSprite)
 	{
 		if (this->animated)
@@ -321,6 +319,7 @@ bool Object::render(SDL_Renderer* renderer)
 	}
 	else
 	{
+		
 		if (this->cameraX != NULL)
 		{
 			return renderObject( renderer,
@@ -347,10 +346,7 @@ bool Object::render(SDL_Renderer* renderer)
  */
 void Object::release()
 {
-	for (int i = 0 ; i < action.size() ; i++)
-	{
-		action[i].release();
-	}
+
 }
 
 void Object::setEnvironmentValues( int *winWidth, int *winHeight,

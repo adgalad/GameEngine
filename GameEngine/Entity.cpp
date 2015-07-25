@@ -7,44 +7,59 @@
 //
 
 #include "Entity.h"
-
+#include "Background.h"
 
 
 
 Entity::Entity()
 {
-	Object::Object();
-	
+
+	this->posUp				= 0;
+	this->posDown			= 0;
+	this->posRight			= 0;
+	this->posLeft			= 0;
+	this->posStanding		= 0;
 	this->active			= true;
 	this->movable			= false;
-	this->stoped			= true;
+	this->stoped			= false;
 	this->iscollision		= true;
 	this->standingAnimated  = false;
 	this->spriteMap			= NULL;
 	this->direction			= 1;
 	this->velocityX			= 0.0;
 	this->velocityY			= 0.0;
-	this->jumpVelocity		= _jumpAcceleration;
-	this->gravity			= _gravtiyAcceleration;
+	previousSpritePosition  = 0;
+	this->specialAction     = 0;
+	this->jumpVelocity		= GameParameter::_jumpAcceleration;
+	this->gravity			= GameParameter::_gravtiyAcceleration;
 }
 
 
 
 Entity::Entity(SDL_Surface* surface, SDL_Renderer *renderer)
 {
-	Object::Object();
-	
 	this->texture = SDL_CreateTextureFromSurface(renderer, surface);
 	if (this->texture != NULL)
 	{
 		SDL_QueryTexture(this->texture, NULL, NULL, &this->width, &this->height);
-		this->active		= true;
-		this->movable		= false;
-		this->iscollision	= true;
-		this->direction		= 1;
-		this->velocityX		= 0.0;
-		this->velocityY		= 0.0;
-		this->gravity		= 4.9;
+		this->posUp				= 0;
+		this->posDown			= 0;
+		this->posRight			= 0;
+		this->posLeft			= 0;
+		this->posStanding		= 0;
+		this->active			= true;
+		this->movable			= false;
+		this->stoped			= true;
+		this->iscollision		= true;
+		this->standingAnimated  = false;
+		this->spriteMap			= NULL;
+		this->direction			= 1;
+		this->velocityX			= 0.0;
+		this->velocityY			= 0.0;
+		previousSpritePosition  = 0;
+		this->specialAction     = 0;
+		this->jumpVelocity		= GameParameter::_jumpAcceleration;
+		this->gravity			= GameParameter::_gravtiyAcceleration;
 	}
 	else
 	{
@@ -54,7 +69,7 @@ Entity::Entity(SDL_Surface* surface, SDL_Renderer *renderer)
 
 void Entity::setBackground(Background *bg)
 {
-	this->background = std::unique_ptr<Background>(bg);
+	this->background = bg;
 }
 
 void Entity::setStadingAnimated(bool value)
@@ -299,18 +314,19 @@ bool Entity::collision()
 		this->X += this->velocityX;
 		this->Y += this->velocityY;
 	}
+//	printf("%d %d")
 	return collision;
 }
 
 void Entity::movement()
 {
-	
 	if(this->movable)
 	{
 		this->velocityY += this->gravity;
 		if(this->stoped)
 		{
-			if (this->velocityX < 0) {
+			if (this->velocityX < 0)
+			{
 				this->velocityX += 8;
 				if (this->velocityX > -2)
 				{
@@ -326,7 +342,6 @@ void Entity::movement()
 				}
 			}
 		}
-		this->collision();
 	}
 }
 
@@ -376,10 +391,11 @@ bool Entity::renderObject(SDL_Renderer *renderer,
 
 bool Entity::render(SDL_Renderer *renderer)
 {
-	this->movement();
+
 	if(this->spriteMap == NULL)
 	{
-		return Object::render(renderer);
+		Object::render(renderer);
+
 	}
 	else
 	{
@@ -437,7 +453,7 @@ bool Entity::render(SDL_Renderer *renderer)
 			}
 			if (this->cameraX != NULL)
 			{
-				return renderObject( renderer,
+				renderObject( renderer,
 									this->X - *this->cameraX,
 									this->Y - *this->cameraY,
 									this->currentFrameX,
@@ -448,7 +464,7 @@ bool Entity::render(SDL_Renderer *renderer)
 			}
 			else
 			{
-				return renderObject( renderer,
+				renderObject( renderer,
 									this->X,
 									this->Y,
 									this->currentFrameX,
@@ -459,6 +475,22 @@ bool Entity::render(SDL_Renderer *renderer)
 			}
 			
 			
+		}
+	}
+	if (this->specialAction > 1)
+	{
+		--this->specialAction;
+	}
+	else if (this->specialAction == 1)
+	{
+		--this->specialAction;
+		if (this->verticalAnimation)
+		{
+			this->currentFrameY = this->previousSpritePosition;
+		}
+		else
+		{
+			this->currentFrameX = this->previousSpritePosition;
 		}
 	}
 	return true;

@@ -11,13 +11,34 @@
 
 #include <stdio.h>
 #include "SDLHeader.h"
-#include "Entity.h"
+#include "TemporalEntity.h"
+
+class PlayerAction
+{
+public:
+	int spritePosition;
+	uint key;
+};
+
 
 class Player : public Entity
 {
+	friend class Game;
+protected:
+	vector<PlayerAction*> actions;
+	
 	
 public:
+	
 	Player();
+	
+	int keyUp;
+	int keyDown;
+	int keyRight;
+	int keyLeft;
+	int keyStanding;
+	
+	bool addAction(int position, uint key);
 	
 	/* Movement Methods */
 	void moveLeft(Uint8 *keyStatus);
@@ -33,7 +54,7 @@ public:
 	void stop();
 	
 	/* Control Methods */
-	void eventHandler(SDL_Event *event,Uint8 *keyStates);
+	void eventHandler(SDL_Event *event,Uint8 *keyStates,SDL_Renderer *renderer);
 	
 	void release();
 };

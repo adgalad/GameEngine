@@ -30,6 +30,8 @@ private:
 	
 	static bool loadXMLEntity(pugi::xml_node *node, Game *game, Entity *entity);
 	
+	static bool loadXMLPlayer(pugi::xml_node *node, Game *game, Player *player);
+	
 	static bool loadXMLBackground(pugi::xml_node *node, Game *game);
 	
 };

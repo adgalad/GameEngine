@@ -27,7 +27,7 @@ class Object
 		/* * * * * * * * */
 	
 public:
-	vector<unique_ptr<ObjectAction>> action;
+
 	SDL_TimerID timer;
 	int         *spriteMap;
 	int         columns, rows;

@@ -12,14 +12,25 @@
 #include <stdio.h>
 #include "SDLHeader.h"
 #include "Object.h"
-#include "Background.h"
+
 
 class Background;
+class EntityList;
 
 class Entity : public Object
 {
+	friend class EntityList;
+	friend class Background;
 public:
-	std::unique_ptr<Background> background;
+	Background *background;
+	
+	int specialAction;
+	int previousSpritePosition;
+	int posUp;
+	int posDown;
+	int posRight;
+	int posLeft;
+	int posStanding;
 	
 	bool active;
 	bool movable;
@@ -37,7 +48,7 @@ public:
 
 protected:
 	
-	bool collision();
+	virtual bool collision();
 
 public:
 	Entity();
@@ -50,7 +61,7 @@ public:
 	
 	void moveTo(int x, int y);
 	
-	void movement();
+	virtual void movement();
 
 	virtual bool render(SDL_Renderer *renderer);
 	
