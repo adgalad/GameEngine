@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>1854E4FB-0BE3-4B89-8763-50D8935E444C</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Geaa</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>5347B3BD7463B993F02C77867A3348B48099D128</key>
+		<string>https://github.com/adgalad/GameEngine</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Geaa.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>5347B3BD7463B993F02C77867A3348B48099D128</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/adgalad/GameEngine</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>5347B3BD7463B993F02C77867A3348B48099D128</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>5347B3BD7463B993F02C77867A3348B48099D128</string>
+			<key>IDESourceControlWCCName</key>
+			<string>GameEngine</string>
+		</dict>
+	</array>
+</dict>
+</plist>

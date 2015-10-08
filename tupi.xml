@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<game cameraX="0" cameraY="0" fps="12" jumoAceleration="-70" maxSprintVelocityX="0" maxSprintVelocityY="0" maxWalkVelocityX="40" maxWalkVelocityY="0" gravtiyAcceleration="9.80000019">
+	<texture>
+		<item path="/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/sprite.png" name="sprite" id="9" />
+		<item path="/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/ken.png" name="Ken" id="8" />
+		<item path="/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/sf2-ground.jpg" name="sf2-ground" id="7" />
+		<item path="/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/sf2-bg.jpg" name="sf2-bg" id="6" />
+		<item path="/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/bg.png" name="Sky" id="5" />
+		<item path="/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/yoshi.png" name="Yoshi" id="4" />
+		<item path="/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/wall.jpg" name="Wall" id="3" />
+		<item path="/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/ground.jpg" name="Ground" id="2" />
+		<item path="/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/Tree.png" name="Tree" id="1" />
+	</texture>
+	<background animatedColumn="1" animatedRow="1" animated="false" isSprite="false" isStatic="false" verticalAnimation="true" X="0" Y="0" id="6">
+		<player animatedColumn="7" animatedRow="10" animated="true" isSprite="true" isStatic="false" verticalAnimation="false" X="500" Y="300" id="8" specialAction="0" previousSpritePosition="0" active="true" movable="false" stoped="false" iscollision="true" standingAnimated="true" direction="1" velocityX="0" velocityY="0" jumpVelocity="0" gravity="0" keyUp="9999994" keyDown="9999993" keyRight="9999992" keyLeft="9999991" keyStanding="9999995">
+			<spriteMap>
+				<c value="4" />
+				<c value="4" />
+				<c value="3" />
+				<c value="5" />
+				<c value="2" />
+				<c value="4" />
+				<c value="5" />
+				<c value="5" />
+				<c value="7" />
+				<c value="1" />
+				<control>
+					<standing position="1" key="0" />
+					<moveUp position="8" key="up" />
+					<moveDown position="9" key="down" />
+					<moveLeft position="3" key="left" />
+					<moveRight position="3" key="right" />
+				</control>
+			</spriteMap>
+		</player>
+		<entity animatedColumn="1" animatedRow="1" animated="false" isSprite="true" isStatic="false" verticalAnimation="true" X="0" Y="760" id="7" specialAction="0" previousSpritePosition="0" active="true" movable="false" stoped="false" iscollision="true" standingAnimated="false" direction="1" velocityX="0" velocityY="0" jumpVelocity="0" gravity="0" />
+	</background>
+</game>

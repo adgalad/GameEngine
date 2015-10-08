@@ -1,0 +1,143 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<game jumpAcceleration    = "-70"
+	gravtiyAcceleration = "9.8"
+	fps				  = "12"
+	cameraY			  = "-0"
+	maxWalkVelocityX	  = "40">
+	
+	<texture>
+		<item path = "/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/Tree.png"
+		name = "Tree"
+		id   = "1" />
+		
+		<item path = "/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/ground.jpg"
+		name = "Ground"
+		id   = "2"/>
+		
+		<item path = "/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/wall.jpg"
+		name = "Wall"
+		id   = "3"/>
+		
+		<item path = "/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/yoshi.png"
+		name = "Yoshi"
+		id   = "4"/>
+		
+		<item path = "/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/bg.png"
+		name = "Sky"
+		id   = "5"/>
+		
+		<item path = "/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/sf2-bg.jpg"
+		name = "sf2-bg"
+		id   = "6"/>
+		
+		<item path = "/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/sf2-ground.jpg"
+		name = "sf2-ground"
+		id   = "7"/>
+		
+		<item path = "/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/ken.png"
+		name = "Ken"
+		id   = "8"/>
+		
+		<item path = "/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/Resource/sprite.png"
+		name = "sprite"
+		id   = "9"/>
+		
+		
+	</texture>
+	
+	<background id = "6" static="false">
+		
+		<player
+			id				= "8"
+			X					= "500"
+			Y					= "300"
+			velocityX			= "0"
+			velocityY			= "0"
+			animated			= "true"
+			animatedRow		= "10"
+			animatedColumn	= "7"
+			standingAnimated	= "true"
+			verticalAnimation = "false">
+			<spriteMap>
+				<c value="4"/>
+				<c value="4"/>
+				<c value="3"/>
+				<c value="5"/>
+				<c value="2"/>
+				<c value="4"/>
+				<c value="5"/>
+				<c value="5"/>
+				<c value="7"/>
+				<c value="1"/>
+				<control>
+					<standing
+					position = "1"/>
+					<moveUp
+					position = "8"/>
+					<moveDown
+					position = "9"/>
+					<moveRight
+					position = "3"/>
+					<moveLeft
+					position = "3"/>
+					<special
+					position = "0"
+					key		 = "s"/>
+					<special
+					position = "2"
+					key      = "d"/>
+					<special
+					position = "7"
+					key		 = "x"/>
+					<special
+					position = "6"
+					key      = "c"/>
+				</control>
+				
+				
+			</spriteMap>
+		</player>
+		
+		
+		
+		<!--			<entity-->
+		<!--				id = "3"-->
+		<!--				X  = "150"-->
+		<!--				Y  = "500" />-->
+		<!--				-->
+		<!--				-->
+		<!--			<entity-->
+		<!--				id = "3"-->
+		<!--				X  = "1900"-->
+		<!--				Y  = "500" />-->
+		<!--			-->
+		<!--			<entity-->
+		<!--				id = "2"-->
+		<!--				X  = "750"-->
+		<!--				Y  = "760" />-->
+		<!--				-->
+		<entity
+		id = "7"
+		X  = "0"
+		Y  = "760" />
+		<!--				-->
+		<!--			<entity-->
+		<!--				id = "1"-->
+		<!--				iscollision = "false"-->
+		<!--				X  = "900"-->
+		<!--				Y  = "650" />-->
+		<!--				-->
+		<!--			<entity-->
+		<!--				id = "1"-->
+		<!--				iscollision = "false"-->
+		<!--				X  = "500"-->
+		<!--				Y  = "650" />-->
+		<!--				-->
+		<!--			<entity-->
+		<!--				id = "1"-->
+		<!--				iscollision = "false"-->
+		<!--				X  = "1200"-->
+		<!--				Y  = "650" />-->
+	</background>
+</game>
