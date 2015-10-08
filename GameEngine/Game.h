@@ -9,11 +9,12 @@
 #ifndef __GameEngine__Game__
 #define __GameEngine__Game__
 
-#include <memory.h>
+
 #include "SDLHeader.h"
 #include <stdio.h>
 #include "Background.h"
 #include "Player.h"
+
 
 class Camera;
 
@@ -23,25 +24,28 @@ class Camera;
 class Game
 {
 protected:
-	SDL_Event               *event;
-	Camera					*camera;
-	bool					sideScrolling;
-	bool                    running;
-	int                     maxFPS;
+	SDL_Event*		event;
+	Camera*			camera;
+	bool			sideScrolling;
+	bool			running;
+	int				maxFPS;
 	
 public:
-	SDL_Renderer				*renderer;
-	int							width, height;
-	int							X,Y;
-	std::unique_ptr<Player>     player;
-	std::unique_ptr<Background> background;
-	SDL_Window					*mainWindow;
-	SDL_Texture					*canvas;
+	SDL_Renderer*	renderer;
+	int				width, height;
+	int				X,Y;
+	Player*			player;
+	Background*		background;
+	vector<Entity*> entities;
+	SDL_Window*		mainWindow;
+	SDL_Texture*	canvas;
 
 public:
 	Game(int width  = DEFAULT_WINDOW_SIZE,
 		 int height = DEFAULT_WINDOW_SIZE
 		);
+	
+	~Game();
 	
 	void setMaxFPS(int FPS);
 	

@@ -60,6 +60,9 @@ public:
 	
 	Object(SDL_Surface *texture);
 	
+		/* DESTRUCTOR */
+	~Object();
+	
 		/* SET FUNCTIONS */
 	void setStatic(bool value);
 	
@@ -104,9 +107,7 @@ public:
 	bool makeTransparent(int R, int G, int B);
 
 	
-	
-		/* DESTRUCTOR */
-	void release();
+
 	
 };
 

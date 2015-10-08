@@ -59,7 +59,7 @@ Game *GameLoader::loadXML(char *file)
 		GameParameter::_gravtiyAcceleration = gameNode.attribute("gravtiyAcceleration").as_float();
 	}
 	for (pugi::xml_node node = gameNode.first_child(); node; node = node.next_sibling()) {
-		if (!strcmp(node.name(),"surface"))
+		if (!strcmp(node.name(),"texture"))
 		{
 			GameLoader::loadXMLTexture(&node, game->renderer);
 		}
@@ -305,6 +305,11 @@ bool GameLoader::loadXMLPlayer(pugi::xml_node *node, Game *game, Player *player)
 								printf("UP %d\n",pos);
 								*pointerKey[j] = SDLK_UP;
 							}
+							else if(!strcmp(key,"space"))
+							{
+								printf("UP %d\n",pos);
+								*pointerKey[j] = SDLK_SPACE;
+							}
 							else if (strlen(key) == 1)
 							{
 								*pointerKey[j] = key[0];
@@ -352,6 +357,10 @@ bool GameLoader::loadXMLPlayer(pugi::xml_node *node, Game *game, Player *player)
 					else if(!strcmp(key,"up"))
 					{
 						player->addAction(pos, SDLK_UP);
+					}
+					else if(!strcmp(key,"space"))
+					{
+						player->addAction(pos, SDLK_SPACE);
 					}
 					else if (strlen(key) == 1)
 					{
@@ -428,7 +437,10 @@ bool GameLoader::loadXMLEntity(pugi::xml_node *node, Game *game, Entity *entity)
 	{
 		entity->iscollision = node->attribute("iscollision").as_bool();
 	}
-	
+	if(!node->attribute("static").empty())
+	{
+		entity->setStatic(node->attribute("static").as_bool());
+	}
 	entity->setAnimateValues(c, r);
 	pugi::xml_node nodeMap;
 	if ((nodeMap = node->child("spriteMap"))!=NULL) {

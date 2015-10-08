@@ -6,7 +6,8 @@
 //  Copyright (c) 2015 ARSC. All rights reserved.
 //
 
-
+#include <string>
+#include <map>
 
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -22,7 +23,6 @@ std::string BASE_PATH_PROJECT  = "../../../../";
 
 int main(int argc, char *argv[])
 {
-
 //	TemporalEntity *e1 = new TemporalEntity();
 //	TemporalEntity *e2 = new TemporalEntity();
 //	TemporalEntity *e3 = new TemporalEntity();
@@ -44,14 +44,14 @@ int main(int argc, char *argv[])
 //		printf("%d ",e->id);
 //	}
 	
-	Game *game = GameLoader::loadXML((char*)"/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/setup.xml");
-
-	if(game != NULL)
-	{
-
-		game->run();
-		game->release();
-	}
+//	Game *game = GameLoader::loadXML((char*)"/Volumes/HDD/C-C++/PROYECTOS/Juego_SDL/GameEngine/setup.xml");
+//
+//	if(game != NULL)
+//	{
+//
+//		game->run();
+//		game->release();
+//	}
 	return 0;
 }
 

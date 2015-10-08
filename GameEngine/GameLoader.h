@@ -33,7 +33,6 @@ private:
 	static bool loadXMLPlayer(pugi::xml_node *node, Game *game, Player *player);
 	
 	static bool loadXMLBackground(pugi::xml_node *node, Game *game);
-	
 };
 
 

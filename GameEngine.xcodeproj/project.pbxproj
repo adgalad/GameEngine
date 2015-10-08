@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		070E21741B606B5700E81911 /* EntityList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 070E21721B606B5700E81911 /* EntityList.cpp */; };
 		0719E8001B42414F003C4308 /* TextEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0719E7FE1B42414F003C4308 /* TextEntity.cpp */; };
+		072457961BC61469005F6C89 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072457941BC61469005F6C89 /* Texture.cpp */; settings = {ASSET_TAGS = (); }; };
 		07270E5C1B5D7BF700CC6BFA /* TemporalEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07270E5A1B5D7BF700CC6BFA /* TemporalEntity.cpp */; };
 		0741AD061AB123EF009DCA20 /* Game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0741AD041AB123EF009DCA20 /* Game.cpp */; settings = {COMPILER_FLAGS = "-O3"; }; };
 		076B89BF1AB2B13200E9FFAF /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076B89BD1AB2B13200E9FFAF /* Entity.cpp */; settings = {COMPILER_FLAGS = "-O3"; }; };
@@ -18,8 +19,6 @@
 		07AE84751B43102A00EFEFF4 /* SDLHeader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07AE84741B43102A00EFEFF4 /* SDLHeader.cpp */; };
 		07DF7E2A1AAAC394002D62A3 /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07DF7E221AAAC394002D62A3 /* Object.cpp */; settings = {COMPILER_FLAGS = "-O3"; }; };
 		07DF7E2B1AAAC394002D62A3 /* ObjectAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07DF7E241AAAC394002D62A3 /* ObjectAction.cpp */; settings = {COMPILER_FLAGS = "-O3"; }; };
-		07EF34341AC4948C004A0AAC /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07EF34331AC4948C004A0AAC /* Cocoa.framework */; };
-		07EF34361AC49495004A0AAC /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07EF34351AC49495004A0AAC /* OpenGL.framework */; };
 		07EF34391AC494B1004A0AAC /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07EF34371AC494B1004A0AAC /* SDL2_image.framework */; };
 		07EF343A1AC494B1004A0AAC /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07EF34381AC494B1004A0AAC /* SDL2.framework */; };
 		07EF343D1AC494D9004A0AAC /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07EF343B1AC494D9004A0AAC /* SDL2_mixer.framework */; };
@@ -49,6 +48,8 @@
 		071A4EF21AC3D7190014AE6D /* ground.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = ground.jpg; path = Resource/ground.jpg; sourceTree = "<group>"; };
 		071A4EF31AC3D7190014AE6D /* wall.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = wall.jpg; path = Resource/wall.jpg; sourceTree = "<group>"; };
 		071A4EF41AC3DA750014AE6D /* Tree.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Tree.png; path = Resource/Tree.png; sourceTree = "<group>"; };
+		072457941BC61469005F6C89 /* Texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
+		072457951BC61469005F6C89 /* Texture.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Texture.hpp; sourceTree = "<group>"; };
 		07270E5A1B5D7BF700CC6BFA /* TemporalEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TemporalEntity.cpp; sourceTree = "<group>"; };
 		07270E5B1B5D7BF700CC6BFA /* TemporalEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemporalEntity.h; sourceTree = "<group>"; };
 		0741AD041AB123EF009DCA20 /* Game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Game.cpp; sourceTree = "<group>"; };
@@ -82,8 +83,6 @@
 		07DF7E251AAAC394002D62A3 /* ObjectAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectAction.h; sourceTree = "<group>"; };
 		07DF7E261AAAC394002D62A3 /* SDLHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLHeader.h; sourceTree = "<group>"; };
 		07E652671AC8EDB100963D5D /* surface.ge */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = surface.ge; sourceTree = "<group>"; };
-		07EF34331AC4948C004A0AAC /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
-		07EF34351AC49495004A0AAC /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		07EF34371AC494B1004A0AAC /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = ../../../../../../../../Library/Frameworks/SDL2_image.framework; sourceTree = "<group>"; };
 		07EF34381AC494B1004A0AAC /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		07EF343B1AC494D9004A0AAC /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_mixer.framework; path = ../../../../../../../../Library/Frameworks/SDL2_mixer.framework; sourceTree = "<group>"; };
@@ -105,8 +104,6 @@
 				07EF343E1AC494D9004A0AAC /* SDL2_ttf.framework in Frameworks */,
 				07EF34391AC494B1004A0AAC /* SDL2_image.framework in Frameworks */,
 				07EF343A1AC494B1004A0AAC /* SDL2.framework in Frameworks */,
-				07EF34361AC49495004A0AAC /* OpenGL.framework in Frameworks */,
-				07EF34341AC4948C004A0AAC /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,8 +181,6 @@
 				07EF343C1AC494D9004A0AAC /* SDL2_ttf.framework */,
 				07EF34371AC494B1004A0AAC /* SDL2_image.framework */,
 				07EF34381AC494B1004A0AAC /* SDL2.framework */,
-				07EF34351AC49495004A0AAC /* OpenGL.framework */,
-				07EF34331AC4948C004A0AAC /* Cocoa.framework */,
 			);
 			name = Frameworks;
 			path = GameEngine;
@@ -200,11 +195,12 @@
 				070E21731B606B5700E81911 /* EntityList.h */,
 				0741AD051AB123EF009DCA20 /* Game.h */,
 				07F8A5591AC977D700F25BC6 /* GameLoader.h */,
-				07270E5B1B5D7BF700CC6BFA /* TemporalEntity.h */,
 				07DF7E231AAAC394002D62A3 /* Object.h */,
 				07DF7E251AAAC394002D62A3 /* ObjectAction.h */,
 				076B89C21AB2B60000E9FFAF /* Player.h */,
+				07270E5B1B5D7BF700CC6BFA /* TemporalEntity.h */,
 				0719E7FF1B42414F003C4308 /* TextEntity.h */,
+				072457951BC61469005F6C89 /* Texture.hpp */,
 			);
 			name = Header;
 			sourceTree = "<group>";
@@ -220,9 +216,10 @@
 				07F8A5581AC977D700F25BC6 /* GameLoader.cpp */,
 				07DF7E221AAAC394002D62A3 /* Object.cpp */,
 				07DF7E241AAAC394002D62A3 /* ObjectAction.cpp */,
-				07270E5A1B5D7BF700CC6BFA /* TemporalEntity.cpp */,
 				076B89C11AB2B60000E9FFAF /* Player.cpp */,
+				07270E5A1B5D7BF700CC6BFA /* TemporalEntity.cpp */,
 				0719E7FE1B42414F003C4308 /* TextEntity.cpp */,
+				072457941BC61469005F6C89 /* Texture.cpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -293,6 +290,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				072457961BC61469005F6C89 /* Texture.cpp in Sources */,
 				07AE84751B43102A00EFEFF4 /* SDLHeader.cpp in Sources */,
 				07270E5C1B5D7BF700CC6BFA /* TemporalEntity.cpp in Sources */,
 				076B89BF1AB2B13200E9FFAF /* Entity.cpp in Sources */,

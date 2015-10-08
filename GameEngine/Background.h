@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 ARSC. All rights reserved.
 //
 
-#ifndef __GameEngine__Tile__
-#define __GameEngine__Tile__
+#ifndef __GameEngine__Background__
+#define __GameEngine__Background__
 
 #include <stdio.h>
 #include "SDLHeader.h"
@@ -28,7 +28,7 @@ protected:
 public:
 	Background();
 	
-
+	~Background();
 	
 	void addEntity(Entity *entity);
 
@@ -38,9 +38,8 @@ public:
 	
 	void addBackgroundObject(Background *object);
 	
-	void setBackgroundEnviromentValues( int *winWidth, int *winHeight,
-										int *cameraX,  int *cameraY
-									);
+	void setEnvironmentValues(int *winWidth, int *winHeight,
+							  int *cameraX,  int *cameraY   );
 	
 	void loop();
 	
@@ -52,4 +51,4 @@ public:
 };
 
 
-#endif /* defined(__GameEngine__Tile__) */
+#endif /* defined(__GameEngine__Background__) */

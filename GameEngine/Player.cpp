@@ -221,5 +221,5 @@ void Player::eventHandler(SDL_Event *event, Uint8 *keyStates, SDL_Renderer *rend
 
 void Player::release()
 {
-	Object::release();
+	
 }

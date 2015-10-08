@@ -25,6 +25,8 @@ Object::Object()
 
 }
 
+
+
 Object::Object(SDL_Surface *surface, SDL_Renderer *renderer)
 {
 	this->texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -44,6 +46,15 @@ Object::Object(SDL_Surface *surface, SDL_Renderer *renderer)
 	{
 		fprintf(stderr, "Object::Object(SDL_Texture *): Surface assigned is NULL pointer\n");
 	}
+}
+
+/**
+ * Free allocated memory of Object class
+ */
+Object::~Object()
+{
+	SDL_free(texture);
+	free(spriteMap);
 }
 
 void Object::setStatic(bool value)
@@ -234,7 +245,7 @@ bool Object::renderObject(SDL_Renderer *renderer,
 }
 
 /*
- * Generic render function. Call this->renderObject() with different
+ * Generic render function. Calls this->renderObject() with different
  * arguments depending on this->animated value
  */
 bool Object::render(SDL_Renderer* renderer)
@@ -337,17 +348,6 @@ bool Object::render(SDL_Renderer* renderer)
 	}
 }
 
-
-
-
-
-/**
- * Free allocated memory of Object class
- */
-void Object::release()
-{
-
-}
 
 void Object::setEnvironmentValues( int *winWidth, int *winHeight,
 								   int *cameraX,  int *cameraY

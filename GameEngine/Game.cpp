@@ -24,6 +24,18 @@ Game::Game(int width, int height)
 	this->Y				= 0;
 }
 
+Game::~Game()
+{
+	SDL_free(event);
+	SDL_free(renderer);
+	SDL_free(mainWindow);
+	SDL_free(canvas);
+	delete camera;
+	delete player;
+	delete background;
+	entities.clear();
+}
+
 void Game::setMaxFPS(int FPS)
 {
 	this->maxFPS = 1000/FPS;
@@ -62,8 +74,7 @@ bool Game::init()
 		return false;
 	}
 	
-	SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 255);
-	SDL_RenderClear(this->renderer);
+
 
 	
 	this->camera = new Camera();
@@ -117,10 +128,10 @@ void Game::addPlayer(Player *player)
 		fprintf(stderr, "WARNING Game::addPlayer(Player*) player assigned is NULL pointer");
 		return;
 	}
-	this->player = std::unique_ptr<Player>(player);
+	this->player = player;
 	if (this->background != NULL)
 	{
-		this->player->setBackground(this->background.get());
+		((Player*)this->player)->setBackground((Background*)this->background);
 	}
 	else
 	{
@@ -129,7 +140,7 @@ void Game::addPlayer(Player *player)
 }
 void Game::addBackground(Background *bg)
 {
-	this->background = std::unique_ptr<Background>(bg);
+	this->background = bg;
 }
 
 void Game::setRenderer(SDL_Renderer *renderer)
@@ -188,15 +199,18 @@ bool Game::eventHandler()
 	if(this->player != NULL)
 	{
 		//		printf("(%d %d)   (%d %d)\n",player->X, player->Y, this->player->X - this->width/2, this->player->Y - this->height/2);
-		this->player->eventHandler(event, keyStates,this->renderer);
+		((Player*)this->player)->eventHandler(event, keyStates,this->renderer);
 	}
 	return true;
 }
 bool Game::loop()
 {
-	this->background->loop();
-	this->player->movement();
-	this->player->collision();
+	Player* player = (Player*)this->player;
+	Background* background = (Background*)this->background;
+	
+	background->loop();
+	player->movement();
+	player->collision();
 	return false;
 }
 
@@ -205,10 +219,8 @@ void Game::release()
 	SDL_DestroyWindow(this->mainWindow);
 
 	free(this->event);
-	this->player->release();
-	this->player.release();
-	this->background->release();
-	this->background.release();
+	((Player*)this->player)->release();
+	((Background*)this->background)->release();
 	GameParameter::_textures.release();
 }
 
@@ -233,7 +245,7 @@ void Game::setEnvironmentValues( int *winWidth, int *winHeight,
 								 int *cameraX,  int *cameraY
 							)
 {
-	this->background->setBackgroundEnviromentValues( winWidth, winHeight,
+	((Background*)this->background)->setEnvironmentValues( winWidth, winHeight,
 													  cameraX,  cameraY
 													 );
 	this->player->setEnvironmentValues(winWidth, winHeight, cameraX, cameraY);

@@ -35,6 +35,8 @@ class Camera;
 #define UP_DIR		2
 #define DOWN_DIR	3
 
+
+
 class TextureInfo
 {
 public:

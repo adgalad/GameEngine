@@ -63,7 +63,7 @@ bool TextEntity::setMessage(SDL_Renderer *renderer, const char* message, ...)
 	if( this->texture == NULL )
 	{
 		fprintf(stderr,
-				"WARNING TextEntity::setMessage(SDL_Renderer*, char*) Unable to create texture from rendered text! SDL Error: %s\n",
+				"WARNING TextEntity::setMessage(SDL_Renderer*, char*) Unable to create texture from rendered text.\n SDL Error: %s\n",
 				SDL_GetError() );
 	}
 	else

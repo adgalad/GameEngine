@@ -17,6 +17,11 @@
 class Background;
 class EntityList;
 
+class Texture
+{
+	
+};
+
 class Entity : public Object
 {
 	friend class EntityList;
@@ -54,6 +59,8 @@ public:
 	Entity();
 	
 	Entity(SDL_Surface* surface, SDL_Renderer *renderer);
+	
+	~Entity();
 	
 	void setBackground(Background *bg);
 	

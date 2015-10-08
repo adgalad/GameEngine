@@ -67,6 +67,10 @@ Entity::Entity(SDL_Surface* surface, SDL_Renderer *renderer)
 	}
 }
 
+Entity::~Entity()
+{
+	
+}
 void Entity::setBackground(Background *bg)
 {
 	this->background = bg;
@@ -498,7 +502,7 @@ bool Entity::render(SDL_Renderer *renderer)
 
 void Entity::release()
 {
-	Object::release();
+
 }
 
 void Entity::eventHandler(SDL_Event *event,Uint8 *keyStates)

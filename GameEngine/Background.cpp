@@ -13,6 +13,11 @@ Background::Background()
 
 }
 
+Background::~Background()
+{
+	
+}
+
 void Background::addEntity(Entity *entity)
 {
 	
@@ -38,12 +43,10 @@ void Background::addTemporalEntity(Entity *entity)
 
 void Background::removeTemporalEntity(Entity *entity)
 {
-	printf("entro\n");
 	this->tempEntities.remove(entity);
-	printf("salio\n");
 }
 
-void Background::setBackgroundEnviromentValues( int *winWidth, int *winHeight,
+void Background::setEnvironmentValues( int *winWidth, int *winHeight,
 											    int *cameraX,  int *cameraY
 									 )
 {
@@ -53,7 +56,7 @@ void Background::setBackgroundEnviromentValues( int *winWidth, int *winHeight,
 	for (int i = 0; i < (int)this->entities.size(); i++) {
 		this->entities[i]
 			->setEnvironmentValues( winWidth, winHeight,
-									cameraX, cameraY
+									cameraX , cameraY
 								);
 	}
 }
